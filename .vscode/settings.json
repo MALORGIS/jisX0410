@@ -1,0 +1,30 @@
+{
+  "files.exclude": {
+    //node_modulesはvscodeで管理しない。(中を見ない)
+    "node_modules": true,
+    //package-lock.jsonはvscodeで管理しない。(中を見ない)
+    "package-lock.json": true,
+
+    /** テスト生成のコードを管理しない */
+    "**/*.test.js":true,
+    "**/*.test.js.map":true,
+    /** カバレッジ */
+    "coverage": true,
+
+    //Typescript側をメンテするのでapp.jsは表示しない
+    "app.js": true,
+
+    //コピーなので間違えないよう
+    "docs/jisX0410": true,
+
+    //その他余分なもの
+    "docs/node_modules": true,
+    "docs/html-report": true
+
+  },
+  
+  //エディター設定
+  "editor.renderWhitespace": "all",
+  "editor.renderControlCharacters": true,
+  "editor.tabSize": 2
+}

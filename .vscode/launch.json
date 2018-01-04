@@ -1,0 +1,30 @@
+{
+  // IntelliSense を使用して利用可能な属性を学べます。
+  // 既存の属性の説明をホバーして表示します。
+  // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    // クロームを起動する。
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "LaunchChrome",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceRoot}/docs"
+    },
+    // サーバを起動する
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "LaunchServer",
+      "program": "${workspaceFolder}/app.js"
+    }
+  ],
+  //サーバ/クライアントを起動する
+  "compounds": [
+    {
+        "name": "Server/Client",
+        "configurations": ["LaunchServer", "LaunchChrome"]
+    }
+  ]
+}//end

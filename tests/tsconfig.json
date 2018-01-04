@@ -1,0 +1,20 @@
+﻿{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "noEmitOnError": false,
+    "removeComments": true,
+    "sourceMap": true,
+    "declaration": false,
+    "target": "es5",
+    "lib": [
+      "dom",
+      "es5",
+      "scripthost",
+      "es2015.iterable"
+    ]
+  },
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.d.ts"
+  ]
+}

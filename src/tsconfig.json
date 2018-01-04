@@ -1,0 +1,23 @@
+﻿{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "noEmitOnError": false,
+    "removeComments": false,
+    "sourceMap": true,
+    "declaration": true,
+    "target": "es5",
+    "module": "system",
+    "outFile": "./index.js",
+    "lib": [
+      "webworker",
+//      "dom",
+      "es5",
+      "scripthost",
+      "es2015.iterable"
+    ]
+  },
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.d.ts"
+  ]
+}

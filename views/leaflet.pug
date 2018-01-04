@@ -1,0 +1,108 @@
+html(ng-app='App')
+  head
+    meta(charset='utf-8')
+    title 地域メッシュ作成
+    meta(name='viewport', content='initial-scale=1,maximum-scale=1,user-scalable=no')
+    //- bootstrap 4 from  CDN
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css', integrity='sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy', crossorigin='anonymous')
+    //- Load Leaflet from CDN
+    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css" integrity="sha256-LcmP8hlMTofQrGU6W2q3tUnDnDZ1QVraxfMkP060ekM=" crossorigin="anonymous")
+
+    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.13/leaflet.draw.css" integrity="sha256-XzD3RpaHPv7lzX9qt+2n1j5cWj48O24KsgaGYpKN8x8=" crossorigin="anonymous")
+    
+    //- 見栄え用
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous")
+
+    //- leaflet関係
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js" integrity="sha256-kdEnCVOWosn3TNsGslxB8ffuKdrZoGQdIdPwh7W1CsE=" crossorigin="anonymous")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.13/leaflet.draw.js" integrity="sha256-KdOat6Dhzjx3QXF32BFGAAGzPh3KjezQtzSYo3E/VcU=" crossorigin="anonymous")
+
+    //- angularjs
+    //- script(src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.8/angular.js')
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.8/angular.min.js" integrity="sha256-drxfSiYW94qA5Cyx5wrs8T8qV5GB45vES84r+X4zNS0=" crossorigin="anonymous")
+
+    //- bootstrap関連のスクリプト
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.slim.min.js', integrity='sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=', crossorigin='anonymous')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js', integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q', crossorigin='anonymous')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js', integrity='sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4', crossorigin='anonymous')
+
+    script(src='./jisX0410/index.js')
+    script(src='./js/leaflet.js')
+
+    style.
+      body { margin:0; padding:0; }
+      #map { 
+        position: relative; 
+        width: 100%; width: calc(100% - 320px);
+        height: 100%;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      }
+      #leftPane { width: 320px; float: left; }
+      .leaflet-div-icon {
+        background: rgba(255,255,255,0);
+        border: 0px solid rgba(255,255,255,0);
+      }
+
+  body(ng-controller='MapPageController as ctrl')
+    div
+      #leftPane
+        form.container
+          .form-group
+            label 作成方法
+            select.form-control(ng-model="ctrl.operation"
+                                ng-disabled="ctrl.wait",
+                                ng-change="ctrl.onChangeOperation();")
+              option(value="point",selected) 地点
+              option(value="extent") 範囲
+
+          br
+
+          .form-group
+            label 作成メッシュ
+            select.form-control(ng-model="ctrl.selectedSchema",
+                                ng-disabled="ctrl.wait",
+                                ng-options="item as item.label for item in ctrl.schemaList"
+                                ng-change="ctrl.onChangeSchema();")
+          .form-group(ng-hide="ctrl.operation==='extent'")
+            label  この範囲で作成
+            select.form-control(ng-model="ctrl.selectedMaxSchema"
+                                ng-options="item as item.label for item in ctrl.maxSchemaList"
+                                ng-change="ctrl._onMapMoveEnd();"
+                                ng-disabled="ctrl.maxSchemaList.length < 1")
+          br
+          .form-group
+            label ファイル形式
+            select.form-control(ng-model="ctrl.format",
+                                ng-disabled="ctrl.wait",
+                                ng-options="item as item for item in ctrl.fromatList")
+          br
+          p メッシュ作成数:{{ctrl.calcMeshCount() | number}}
+          br
+
+          button.btn.btn-primary.float-right(type='button',
+                ng-click="ctrl.create();",
+                ng-disabled="ctrl.wait") 作成
+            i.fa.fa-refresh.fa-spin.fa-fw(ng-show="ctrl.wait")
+
+      #map
+
+  //- 件数が多い際の処理分岐用確認ダイアログ
+  #MyModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='確認ダイアログ', aria-hidden='true')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header
+          h5.modal-title 確認
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') ×
+        .modal-body
+          p 作成件数が多い為、1次メッシュ単位で処理/ファイルを分割しますか？
+          p ※この際、処理される1次メッシュは陸部のみとなります。
+        .modal-footer
+          button.btn.btn-secondary(type='button',
+                                   ng-click="ctrl.skipCheckCount();",
+                                   data-dismiss='modal')
+            | そのまま続行
+          button.btn.btn-primary(type='button',
+                                 data-dismiss='modal'
+                                 ng-click="ctrl.splitCreate();")
+            | 分割処理

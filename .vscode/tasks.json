@@ -1,0 +1,81 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "サーバ[build]",
+      "type": "typescript",
+      "tsconfig": "server\\tsconfig.json",
+      "problemMatcher": [
+        "$tsc"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "本体[build]",
+      "type": "typescript",
+      "tsconfig": "src\\tsconfig.json",
+      "problemMatcher": [
+        "$tsc"
+      ]
+    },
+    {
+      "label": "地図ページ[build]",
+      "type": "typescript",
+      "tsconfig": "docs\\leaflet\\tsconfig.json",
+      "problemMatcher": [
+        "$tsc"
+      ]
+    },
+    {
+      "label": "性能測定ページ[build]",
+      "type": "typescript",
+      "tsconfig": "docs\\benchmark\\tsconfig.json",
+      "problemMatcher": [
+        "$tsc"
+      ]
+    },
+    {
+      "label": "テストコード[build]",
+      "type": "typescript",
+      "tsconfig": "tests\\tsconfig.json",
+      "problemMatcher": [
+        "$tsc"
+      ]
+    },
+    {
+      "label": "Pug2HTML",
+      "type": "gulp",
+      "task": "default",
+      "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "toPrj",
+      "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "build",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+
+    },
+    {
+      "type": "npm",
+      "script": "test",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

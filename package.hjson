@@ -1,0 +1,50 @@
+{
+  /*
+   * 主にパッケージの説明用
+   * package.json変更時はこれに反映し、package.jsonに反映させるのが望ましいが..無駄に冗長かも
+   * しかしコメントをJSONに書けないのでとりあえず
+   */
+  "name": "jisX0410",
+  "version": "0.0.1",
+  "description": "地域メッシュ作成用ライブラリ",
+  "private": true,
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    /* このファイル(hjson)をproject.jsonに反映させる */
+    "toPrj": "hjson -j package.hjson > package.json",
+    /* テスト実行とカバレッジ計測 */
+    "pretest": "cd tests && tsc",
+    "test": "call node node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha tests/*.test.js",
+    "posttest": "remap-istanbul -i coverage/coverage.json -o docs/html-report -t html"
+    /* インストール時はクライアント側のライブラリも入れる */
+    "postinstall": "cd docs && npm i"
+
+    /* 本体とクライアント側のビルド関連 */
+    "prebuild": "cd docs/leaflet && tsc && cd../benchmark && tsc",
+    "build": "cd src && tsc",
+    "postbuild": "gulp copy2docs && gulp"
+  },
+  "devDependencies": {
+    //主に画面定義用
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.9.0",
+    "gulp-data": "^1.2.1",
+    "gulp-pug": "^3.3.0",
+    "gulp-watch": "^4.3.11",
+    "rimraf": "^2.6.2",
+    //タイプスクリプト
+    "typescript": "^2.6.2",
+    //サーバ側
+    "@types/express": "^4.0.39",
+    "@types/node": "^8.0.57",
+    //デバッグサーバ用
+    "express": "^4.16.2",
+    //テスト用
+    "@types/mocha": "^2.2.45",
+    "@types/power-assert": "^1.4.29",
+    "istanbul": "^0.4.5",
+    "mocha": "^4.0.1",
+    "power-assert": "^1.4.4"
+  }
+}
