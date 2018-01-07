@@ -369,7 +369,7 @@ var jisX0410;
          * @returns ArrayBuffer
          */
         meshUtil.prototype.esriJsonToStringBuffer = function (features) {
-            var headerString = '{ "displayFieldName" : "meshCode", "fieldAliases": { "meshCode" : "メッシュコード" }, "fields" : [{ "name" : "meshCode", "type" : "esriFieldTypeString", "alias" : "メッシュコード", "length" : 15}], "features":';
+            var headerString = '{ "displayFieldName" : "meshCode", "fieldAliases": { "meshCode" : "meshCode" }, "fields" : [{ "name" : "meshCode", "type" : "esriFieldTypeString", "alias" : "meshCode", "length" : 15}], "features":[';
             var footerString = ']}';
             return this._jsonToArrayBuffer(features, headerString, footerString);
         }; //end method

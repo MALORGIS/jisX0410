@@ -336,7 +336,7 @@ namespace jisX0410
      * @returns ArrayBuffer
      */
     public esriJsonToStringBuffer(features: Array<IEsriJsonFeature>): ArrayBuffer{
-      let headerString = '{ "displayFieldName" : "meshCode", "fieldAliases": { "meshCode" : "メッシュコード" }, "fields" : [{ "name" : "meshCode", "type" : "esriFieldTypeString", "alias" : "メッシュコード", "length" : 15}], "features":';
+      let headerString = '{ "displayFieldName" : "meshCode", "fieldAliases": { "meshCode" : "meshCode" }, "fields" : [{ "name" : "meshCode", "type" : "esriFieldTypeString", "alias" : "meshCode", "length" : 15}], "features":[';
       let footerString = ']}';
 
       return this._jsonToArrayBuffer(features, headerString, footerString);
