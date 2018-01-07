@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">96.3% </span>
+        <span class="strong">96.43% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>156/162</span>
+        <span class='fraction'>162/168</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">77.78% </span>
@@ -32,12 +32,12 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>25/25</span>
+        <span class='fraction'>19/19</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">96.25% </span>
+        <span class="strong">96.39% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>154/160</span>
+        <span class='fraction'>160/166</span>
       </div>
     </div>
   </div>
@@ -539,11 +539,7 @@
 494
 495
 496
-497
-498
-499
-500
-501</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+497</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -640,7 +636,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">40×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">444449×</span>
 <span class="cline-any cline-yes">444449×</span>
@@ -680,7 +676,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">40×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">444449×</span>
 <span class="cline-any cline-yes">444449×</span>
@@ -719,7 +715,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">40×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">444449×</span>
 <span class="cline-any cline-yes">444449×</span>
@@ -778,10 +774,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">560×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">560×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1256×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1256×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -812,10 +807,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">550×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">550×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">550×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">550×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -849,10 +843,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
 <span class="cline-any cline-yes">806×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">806×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1139,18 +1131,18 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
       <span class="missing-if-branch" title="if path not taken" >I</span>if (rows &lt;1)
 <span class="cstat-no" title="statement not covered" >        rows = 1;</span>
       
-      let results:Array&lt;IGeoJsonFeature&gt; = Array.from(new Array(rows * cols)).map(
-      function(val:any,index:number){
-          //行列を計算
-          let r = Math.floor(index / cols);
-          let c = index % cols;
+      let results = new Array(rows * cols);
+      for (let index=0; index &lt; rows*cols; index++){
+        //行列を計算
+        let r = Math.floor(index / cols);
+        let c = index % cols;
 &nbsp;
-          let x = (minXY[0] + schema.widthDD/2) + (c * schema.widthDD);
-          let y = (minXY[1] + schema.heightDD/2) + (r * schema.heightDD);
-          //計算した緯度経度からメッシュ情報を取得
-          let info:IMesh = this._getMeshInfoFromBl([y,x], schema);
-          return this._toGeoJson(info);
-      }.bind(this));//end array map
+        let x = (minXY[0] + schema.widthDD/2) + (c * schema.widthDD);
+        let y = (minXY[1] + schema.heightDD/2) + (r * schema.heightDD);
+        //計算した緯度経度からメッシュ情報を取得
+        let info:IMesh = this._getMeshInfoFromBl([y,x], schema);
+        results[index] = this._toGeoJson(info);
+      }//end index loop
 &nbsp;
       return results;
     }//end method
@@ -1179,18 +1171,18 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
       <span class="missing-if-branch" title="if path not taken" >I</span>if (rows &lt;1)
 <span class="cstat-no" title="statement not covered" >        rows = 1;</span>
       
-      let results:Array&lt;IEsriJsonFeature&gt; = Array.from(new Array(rows * cols)).map(
-      function(val:any,index:number){
-          //行列を計算
-          let r = Math.floor(index / cols);
-          let c = index % cols;
+      let results = new Array(rows * cols);
+      for (let index=0; index &lt; rows*cols; index++){
+        //行列を計算
+        let r = Math.floor(index / cols);
+        let c = index % cols;
 &nbsp;
-          let x = (minXY[0] + schema.widthDD/2) + (c * schema.widthDD);
-          let y = (minXY[1] + schema.heightDD/2) + (r * schema.heightDD);
-          //計算した緯度経度からメッシュ情報を取得
-          let info:IMesh = this._getMeshInfoFromBl([y,x], schema);
-          return this._toEsriJson(info);
-      }.bind(this));//end array map
+        let x = (minXY[0] + schema.widthDD/2) + (c * schema.widthDD);
+        let y = (minXY[1] + schema.heightDD/2) + (r * schema.heightDD);
+        //計算した緯度経度からメッシュ情報を取得
+        let info:IMesh = this._getMeshInfoFromBl([y,x], schema);
+        results[index] = this._toEsriJson(info);
+      }//end loop index
       
       return results;
     }//end method
@@ -1218,21 +1210,21 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
       <span class="missing-if-branch" title="if path not taken" >I</span>if (rows &lt;1)
 <span class="cstat-no" title="statement not covered" >        rows = 1;</span>
       
-      let results:Array&lt;IShpMesh&gt; = Array.from(new Array(rows * cols)).map(
-      function(val:any,index:number){
-          //行列を計算
-          let r = Math.floor(index / cols);
-          let c = index % cols;
+      let results = new Array(rows * cols);
+      for (let index=0; index &lt; rows*cols; index++){
+        //行列を計算
+        let r = Math.floor(index / cols);
+        let c = index % cols;
 &nbsp;
-          let x = (minXY[0] + schema.widthDD/2) + (c * schema.widthDD);
-          let y = (minXY[1] + schema.heightDD/2) + (r * schema.heightDD);
-          //計算した緯度経度からメッシュ情報を取得
-          let info:IMesh = this._getMeshInfoFromBl([y,x], schema);
-          return { 
-            "geometry": info.coords,
-            "meshCode": info.meshInfo.meshCode
-          };
-      }.bind(this));//end array map
+        let x = (minXY[0] + schema.widthDD/2) + (c * schema.widthDD);
+        let y = (minXY[1] + schema.heightDD/2) + (r * schema.heightDD);
+        //計算した緯度経度からメッシュ情報を取得
+        let info:IMesh = this._getMeshInfoFromBl([y,x], schema);
+        results[index] = { 
+          "geometry": info.coords,
+          "meshCode": info.meshInfo.meshCode
+        };
+      }//end loop index
       
       //SHPの返却
       return new shpFile(results, shpOpt);
@@ -1277,13 +1269,12 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
       //分割数分配列を作成 
       //例(3次メッシュ): 10等分 * 8等分 * 1 (1次メッシュ=(根)))
       //1次メッシュ1個は80*80の行列=6400メッシュ
-      let features = Array.from(new Array(this._divCount * this._divCount)).map(
-      function(val:any,index:number){
-        
+      let features = new Array(this._divCount * this._divCount);
+      for (let index=0; index&lt; this._divCount * this._divCount; index++){
+&nbsp;
         let coordsInfo:IMesh = this._getMeshInfo(schema, rootsInfo, index, divCount);
-        
-        return this._toGeoJson(coordsInfo);
-      }.bind(this));//end array map
+        features[index] = this._toGeoJson(coordsInfo);
+      };
 &nbsp;
       return &lt;Array&lt;IGeoJsonFeature&gt;&gt;features;
     }//end method
@@ -1311,14 +1302,13 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
       //分割数分配列を作成 
       //例(3次メッシュ): 10等分 * 8等分 * 1 (1次メッシュ=(根)))
       //1次メッシュ1個は80*80の行列=6400メッシュ
-      let features = Array.from(new Array(this._divCount * this._divCount)).map(
-      function(val:any,index:number){
+      let features = new Array(this._divCount * this._divCount);
+      for (let index=0; index&lt; this._divCount * this._divCount; index++){
         
         let coordsInfo:IMesh = this._getMeshInfo(schema, rootsInfo, index, divCount);
-&nbsp;
         //esri feature定義
-        return this._toEsriJson(coordsInfo);
-      }.bind(this));//end array map
+        features[index] = this._toEsriJson(coordsInfo);
+      }//end loop index
 &nbsp;
       return &lt;Array&lt;IEsriJsonFeature&gt;&gt;features;
     }//end method
@@ -1348,16 +1338,14 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
       //分割数分配列を作成 
       //例(3次メッシュ): 10等分 * 8等分 * 1 (1次メッシュ=(根)))
       //1次メッシュ1個は80*80の行列=6400メッシュ
-      let features:Array&lt;IShpMesh&gt; = Array.from(new Array(this._divCount * this._divCount)).map(
-      function(val:any,index:number){
-        
-        let coordsInfo = this._getMeshInfo(schema, rootsInfo, index, divCount);
-&nbsp;
-        return { 
+      let features = new Array(this._divCount * this._divCount);
+      for (let index=0; index&lt; this._divCount * this._divCount; index++){
+        let coordsInfo:IMesh = this._getMeshInfo(schema, rootsInfo, index, divCount);
+        features[index] = { 
           "geometry": coordsInfo.coords,
           "meshCode": coordsInfo.meshInfo.meshCode
         };
-      }.bind(this));//end array map
+      };
 &nbsp;
       //SHPの返却
       return new shpFile(features, shpOpt);
@@ -1549,7 +1537,7 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Jan 07 2018 18:25:17 GMT+0900 (東京 (標準時))
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Jan 07 2018 20:50:23 GMT+0900 (東京 (標準時))
 </div>
 </div>
 <script src="../prettify.js"></script>
