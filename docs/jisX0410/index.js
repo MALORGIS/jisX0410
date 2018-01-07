@@ -184,7 +184,8 @@ var jisX0410;
                 cols = 1;
             if (rows < 1)
                 rows = 1;
-            var results = Array.from(new Array(rows * cols)).map(function (val, index) {
+            var results = new Array(rows * cols);
+            for (var index = 0; index < rows * cols; index++) {
                 //行列を計算
                 var r = Math.floor(index / cols);
                 var c = index % cols;
@@ -192,8 +193,8 @@ var jisX0410;
                 var y = (minXY[1] + schema.heightDD / 2) + (r * schema.heightDD);
                 //計算した緯度経度からメッシュ情報を取得
                 var info = this._getMeshInfoFromBl([y, x], schema);
-                return this._toGeoJson(info);
-            }.bind(this)); //end array map
+                results[index] = this._toGeoJson(info);
+            } //end index loop
             return results;
         }; //end method
         /**
@@ -214,7 +215,8 @@ var jisX0410;
                 cols = 1;
             if (rows < 1)
                 rows = 1;
-            var results = Array.from(new Array(rows * cols)).map(function (val, index) {
+            var results = new Array(rows * cols);
+            for (var index = 0; index < rows * cols; index++) {
                 //行列を計算
                 var r = Math.floor(index / cols);
                 var c = index % cols;
@@ -222,8 +224,8 @@ var jisX0410;
                 var y = (minXY[1] + schema.heightDD / 2) + (r * schema.heightDD);
                 //計算した緯度経度からメッシュ情報を取得
                 var info = this._getMeshInfoFromBl([y, x], schema);
-                return this._toEsriJson(info);
-            }.bind(this)); //end array map
+                results[index] = this._toEsriJson(info);
+            } //end loop index
             return results;
         }; //end method
         /**
@@ -245,7 +247,8 @@ var jisX0410;
                 cols = 1;
             if (rows < 1)
                 rows = 1;
-            var results = Array.from(new Array(rows * cols)).map(function (val, index) {
+            var results = new Array(rows * cols);
+            for (var index = 0; index < rows * cols; index++) {
                 //行列を計算
                 var r = Math.floor(index / cols);
                 var c = index % cols;
@@ -253,11 +256,11 @@ var jisX0410;
                 var y = (minXY[1] + schema.heightDD / 2) + (r * schema.heightDD);
                 //計算した緯度経度からメッシュ情報を取得
                 var info = this._getMeshInfoFromBl([y, x], schema);
-                return {
+                results[index] = {
                     "geometry": info.coords,
                     "meshCode": info.meshInfo.meshCode
                 };
-            }.bind(this)); //end array map
+            } //end loop index
             //SHPの返却
             return new jisX0410.shpFile(results, shpOpt);
         }; //end method
@@ -292,10 +295,12 @@ var jisX0410;
             //分割数分配列を作成 
             //例(3次メッシュ): 10等分 * 8等分 * 1 (1次メッシュ=(根)))
             //1次メッシュ1個は80*80の行列=6400メッシュ
-            var features = Array.from(new Array(this._divCount * this._divCount)).map(function (val, index) {
+            var features = new Array(this._divCount * this._divCount);
+            for (var index = 0; index < this._divCount * this._divCount; index++) {
                 var coordsInfo = this._getMeshInfo(schema, rootsInfo, index, divCount);
-                return this._toGeoJson(coordsInfo);
-            }.bind(this)); //end array map
+                features[index] = this._toGeoJson(coordsInfo);
+            }
+            ;
             return features;
         }; //end method
         /**
@@ -316,11 +321,12 @@ var jisX0410;
             //分割数分配列を作成 
             //例(3次メッシュ): 10等分 * 8等分 * 1 (1次メッシュ=(根)))
             //1次メッシュ1個は80*80の行列=6400メッシュ
-            var features = Array.from(new Array(this._divCount * this._divCount)).map(function (val, index) {
+            var features = new Array(this._divCount * this._divCount);
+            for (var index = 0; index < this._divCount * this._divCount; index++) {
                 var coordsInfo = this._getMeshInfo(schema, rootsInfo, index, divCount);
                 //esri feature定義
-                return this._toEsriJson(coordsInfo);
-            }.bind(this)); //end array map
+                features[index] = this._toEsriJson(coordsInfo);
+            } //end loop index
             return features;
         }; //end method
         /**
@@ -343,13 +349,15 @@ var jisX0410;
             //分割数分配列を作成 
             //例(3次メッシュ): 10等分 * 8等分 * 1 (1次メッシュ=(根)))
             //1次メッシュ1個は80*80の行列=6400メッシュ
-            var features = Array.from(new Array(this._divCount * this._divCount)).map(function (val, index) {
+            var features = new Array(this._divCount * this._divCount);
+            for (var index = 0; index < this._divCount * this._divCount; index++) {
                 var coordsInfo = this._getMeshInfo(schema, rootsInfo, index, divCount);
-                return {
+                features[index] = {
                     "geometry": coordsInfo.coords,
                     "meshCode": coordsInfo.meshInfo.meshCode
                 };
-            }.bind(this)); //end array map
+            }
+            ;
             //SHPの返却
             return new jisX0410.shpFile(features, shpOpt);
         }; //end method
