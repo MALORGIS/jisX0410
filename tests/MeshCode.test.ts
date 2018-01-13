@@ -5,7 +5,6 @@
 //↓コード記述時は下記をコメント
 let jisX0410 = require('../src/index.js');
 
-
 import * as assert from 'power-assert';
 import * as fs from "fs";
 import { fail } from 'power-assert';
@@ -139,7 +138,22 @@ describe('meshUtilTest', () => {
           //メッシュコード文字列から構造取得をテスト
           let checkSchema = meshUtil.meshCode2Schema(geoJ[0].properties.meshCode);
           assert.equal(checkSchema.label, sc.label)
+          //メッシュ構造からメッシュ情報取り出し
+          let cd2info: jisX0410.IMeshInfo = undefined;
+          try {
+            cd2info = checkSchema.meshCode2MeshInfo(geoJ[0].properties.meshCode);
+          } catch (e) {
+            console.log(geoJ[0].properties.meshCode);
+            console.log(sc.label);
+            console.log(sc.meshCodeLength);
+            throw e;
+          }
+          dx = cd2info.lon + (checkSchema.widthDD / 2.0);
+          dy = cd2info.lat + (checkSchema.heightDD / 2.0);
 
+          let checkGeoJ = meshUtil.createGeoJSON([dy, dx], sc, sc);
+          assert.equal(cd2info.meshCode, geoJ[0].properties.meshCode);
+          assert.equal(geoJ[0].properties.meshCode, checkGeoJ[0].properties.meshCode);
         }
 
         let coords:Array<[number, number]> = geoJ[0].geometry.coordinates[0];
