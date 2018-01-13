@@ -4,16 +4,16 @@
   "description": "地域メッシュ作成用ライブラリ",
   "private": true,
   "author": "",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "toPrj": "hjson -j package.hjson > package.json",
     "pretest": "cd tests && tsc",
     "test": "call node node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha tests/*.test.js",
     "posttest": "remap-istanbul -i coverage/coverage.json -o docs/html-report -t html",
     "postinstall": "cd docs && npm i",
-    "prebuild": "cd docs/leaflet && tsc && cd../benchmark && tsc",
-    "build": "cd src && tsc",
-    "postbuild": "gulp copy2docs && gulp"
+    "prebuild": "cd src && tsc",
+    "build": "gulp copy2docs && gulp",
+    "postbuild": "cd docs/leaflet && tsc && cd../benchmark && tsc"
   },
   "devDependencies": {
     "gulp": "^3.9.1",

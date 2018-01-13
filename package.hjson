@@ -21,9 +21,9 @@
     "postinstall": "cd docs && npm i"
 
     /* 本体とクライアント側のビルド関連 */
-    "prebuild": "cd docs/leaflet && tsc && cd../benchmark && tsc",
-    "build": "cd src && tsc",
-    "postbuild": "gulp copy2docs && gulp"
+    "prebuild":  "cd src && tsc",
+    "build": "gulp copy2docs && gulp",
+    "postbuild": "cd docs/leaflet && tsc && cd../benchmark && tsc"
   },
   "devDependencies": {
     //主に画面定義用
