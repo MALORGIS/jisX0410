@@ -30,7 +30,7 @@ gulp.task('templates', function () {
       return { data: json };
     }))
     .pipe(pug({
-      pretty: true
+      pretty: false
     }))
     .pipe(gulp.dest('./docs/'))
 });
