@@ -9,7 +9,7 @@ namespace samples {
     /** angular scope */
     private _scope: angular.IScope;
     /** メッシュ作成用 WebWorker */
-    private _woker:jisX0410.meshWorker;
+    private _worker:jisX0410.meshWorker;
     /** メッシュ作成用ユーティリティクラス */
     private _meshUtil: jisX0410.meshUtil;
 
@@ -58,7 +58,7 @@ namespace samples {
       this._scope = $scope;
 
       let worker = new jisX0410.meshWorker('./jisX0410/index.js');
-      this._woker = worker;
+      this._worker = worker;
 
       this._meshUtil = new jisX0410.meshUtil();
       this.schemaList = this._meshUtil.meshSchemes;
@@ -258,12 +258,12 @@ namespace samples {
       let center = layer.getBounds().getCenter();
 
       //作成開始
-      this._woker.postMessage(<jisX0410.IMessage>{
+      this._worker.postMessage(<jisX0410.IMessage>{
         operation: "point",
         //format: "GeoJSON",
         format: this.format,
         shape: [center.lat, center.lng],
-        schemaLable : this.selectedSchema.label,
+        schemaLabel : this.selectedSchema.label,
         maxSchemaLabel: this.selectedMaxSchema.label
       }, (evt: jisX0410.IJSONResult | jisX0410.IShpResult) =>{
           
@@ -325,12 +325,12 @@ namespace samples {
         createArea = { xmin: sw.lng, ymin: sw.lat, xmax:ne.lng, ymax:ne.lat };
       }
 
-      this._woker.postMessage(<jisX0410.IMessage>{
+      this._worker.postMessage(<jisX0410.IMessage>{
         operation: this.operation,
         //format: "GeoJSON",
         format: this.format,
         shape: createArea,
-        schemaLable : this.selectedSchema.label,
+        schemaLabel : this.selectedSchema.label,
         maxSchemaLabel: this.selectedMaxSchema.label
       }, (evt: jisX0410.IJSONResult | jisX0410.IShpResult) =>{
           

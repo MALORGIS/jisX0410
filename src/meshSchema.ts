@@ -166,23 +166,23 @@ namespace jisX0410
         mesh1, mesh2, mesh3_5, mesh3_2, mesh3, mesh4, mesh5, mesh6, mesh7, mesh8
       ];
 
-    }//end mehtod
+    }//end method
 
 
     /**
      * メッシュコード取得用の標準処理定義
      * @param thisObj メッシュスキーマ
      * @param latlon 緯度経度
-     * @param getCoods メッシュコード取得処理
+     * @param getCoords メッシュコード取得処理
      * @returns メッシュ情報
      */
-    private static _getCodeBase(thisObj:meshSchema , latlon:[number,number] ,getCoods: (preMeshInfo:IMeshInfo, r:number, c:number)=> string): IMeshInfo {
+    private static _getCodeBase(thisObj:meshSchema , latlon:[number,number] ,getCoords: (preMeshInfo:IMeshInfo, r:number, c:number)=> string): IMeshInfo {
 
       let preMeshInfo = thisObj.parent.getMeshCode(latlon);
 
       let r:number = Math.floor((latlon[0] - preMeshInfo.lat) / thisObj.heightDD);
       let c:number = Math.floor((latlon[1] - preMeshInfo.lon) / thisObj.widthDD);
-      let code:string = getCoods.bind(thisObj)(preMeshInfo,r,c);
+      let code:string = getCoords.bind(thisObj)(preMeshInfo,r,c);
 
       let lat:number = preMeshInfo.lat + (r * thisObj.heightDD);
       let lon:number = preMeshInfo.lon + (c * thisObj.widthDD);

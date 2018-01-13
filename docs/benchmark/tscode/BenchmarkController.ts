@@ -12,7 +12,7 @@ namespace samples {
     private _ngTableParams:any;
 
     /** メッシュ作成用 WebWorker */
-    private _woker:jisX0410.meshWorker;
+    private _worker:jisX0410.meshWorker;
 
     /** メッシュ作成用ユーティリティクラス */
     private _meshUtil: jisX0410.meshUtil;
@@ -47,7 +47,7 @@ namespace samples {
       this._ngTableParams = NgTableParams;
 
       let worker = new jisX0410.meshWorker('./jisX0410/index.js');
-      this._woker = worker;
+      this._worker = worker;
 
       this._meshUtil = new jisX0410.meshUtil();
       
@@ -100,12 +100,12 @@ namespace samples {
       let start_ms = new Date().getTime();
       
       //ワーカにメッセージ送信
-      let worker = this._woker;
+      let worker = this._worker;
       worker.postMessage({  
         operation:"point",
         format:this.format,
         shape:latlon,
-        schemaLable:item.schema.label,
+        schemaLabel:item.schema.label,
         maxSchemaLabel: undefined
       }, (msg)=>{
         //経過時間を計測

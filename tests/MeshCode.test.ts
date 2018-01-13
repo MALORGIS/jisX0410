@@ -201,8 +201,8 @@ describe('meshUtilTest', () => {
       /* shpesizeとshpの比較 */
       let assertShpSize = function(shpSize:any, shp:jisX0410.shpFile){
         assert.equal( shpSize.shpLength, shp.shp.byteLength );
-        assert.equal( shpSize.shxLenght, shp.shx.byteLength );
-        assert.equal( shpSize.dbfLenght, shp.dbf.byteLength );
+        assert.equal( shpSize.shxLength, shp.shx.byteLength );
+        assert.equal( shpSize.dbfLength, shp.dbf.byteLength );
       };
       let latlon: [number, number] = [36, 136];
       //1次メッシュ (1件の返却)
@@ -415,8 +415,8 @@ describe('meshUtilTest', () => {
         var shpSize = jisX0410.shpFile.calcShpFileBytes(esri.length);
         var shp = meshUtil.createShpFromExtent(ext,schema);
         assert.equal( shpSize.shpLength, shp.shp.byteLength );
-        assert.equal( shpSize.shxLenght, shp.shx.byteLength );
-        assert.equal( shpSize.dbfLenght, shp.dbf.byteLength );
+        assert.equal( shpSize.shxLength, shp.shx.byteLength );
+        assert.equal( shpSize.dbfLength, shp.dbf.byteLength );
         
         //回すだけ回して件数一致確認
         assert.equal(geoJ.length, esri.length);

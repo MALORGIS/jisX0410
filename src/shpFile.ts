@@ -42,8 +42,8 @@ namespace jisX0410
      */
     public static calcShpFileBytes(meshCount:number):{
       shpLength: number,
-      shxLenght: number,
-      dbfLenght: number
+      shxLength: number,
+      dbfLength: number
     }
     {
       //---------- shp -------------
@@ -55,7 +55,7 @@ namespace jisX0410
       //レコード情報136-8の128
       const SHX_RECORD_CONTENT_LENGTH = 128 / 2;
       // ヘッダ100とレコード数 * 8
-      let shxLenght =100 + (8 * meshCount);
+      let shxLength =100 + (8 * meshCount);
 
       //---------- dbf -------------
       //20文字のメッシュコード固定で考える。
@@ -68,12 +68,12 @@ namespace jisX0410
       //データ総長 レコード数×フィールドの長さ
       let dataLength = BYTES_PER_RECORD * meshCount + 1;
       //ヘッダー+カラム説明+
-      let dbfLenght = 32 + FIELD_DESC_LENGTH + dataLength;
+      let dbfLength = 32 + FIELD_DESC_LENGTH + dataLength;
 
       return {
         shpLength: shpLength,
-        shxLenght: shxLenght,
-        dbfLenght: dbfLenght
+        shxLength: shxLength,
+        dbfLength: dbfLength
       };
     }//end method
 
@@ -139,12 +139,12 @@ namespace jisX0410
     {
       //メッシュ定義受け取り
       let mesh = this._mesh;
-      let meshLenght = this._meshLength;
+      let meshLength = this._meshLength;
 
       // ヘッダ－:100  レコード:136 (情報:56/ポイント配列:16*5=80 5は頂点数)
       //レコード情報はポリゴンパート数で変動
-      let bufferLenght = 100 + (136 * meshLenght);
-      let shpBuffer = new ArrayBuffer(bufferLenght);
+      let bufferLength = 100 + (136 * meshLength);
+      let shpBuffer = new ArrayBuffer(bufferLength);
       
       //先頭100がヘッダ
       var shpHeaderView = new DataView(shpBuffer, 0, 100);
@@ -154,7 +154,7 @@ namespace jisX0410
       shpHeaderView.setInt32(28, 1000, true);
 
       //最大長 shp file length in 16 bit words
-      shpHeaderView.setInt32(24, bufferLenght / 2);
+      shpHeaderView.setInt32(24, bufferLength / 2);
     
       //形状指定 : 1=point 3=polyline 5=polygon
 		  shpHeaderView.setInt32(32, 5, true);
@@ -217,13 +217,13 @@ namespace jisX0410
     private _createInx():void {
 
       let mesh = this._mesh;
-      let meshLenght = this._meshLength;
+      let meshLength = this._meshLength;
       let fullExtent = this.fullExtent;
 
       //レコード情報136-8の128
       const RECORD_CONTENT_LENGTH = 128 / 2;
       // ヘッダ100とレコード数 * 8
-      let shxBuffer = new ArrayBuffer(100 + 8 * meshLenght);
+      let shxBuffer = new ArrayBuffer(100 + 8 * meshLength);
 
       let shxHeaderView = new DataView(shxBuffer, 0, 100);
       //定型
@@ -238,9 +238,9 @@ namespace jisX0410
       shxHeaderView.setFloat64(52, fullExtent.xmax, true);
       shxHeaderView.setFloat64(60, fullExtent.ymax, true);
       //レコード数をセット
-      shxHeaderView.setInt32(24, (50 + meshLenght * 4));
+      shxHeaderView.setInt32(24, (50 + meshLength * 4));
 
-      let shxDataView = new DataView(shxBuffer, 100, 8 * meshLenght);
+      let shxDataView = new DataView(shxBuffer, 100, 8 * meshLength);
 
      mesh.map(
       function(val:any,index:number){
@@ -261,7 +261,7 @@ namespace jisX0410
     /** DBFファイルの作成 */
     private _createDbf():void {
       let mesh = this._mesh;
-      let meshLenght = this._meshLength;
+      let meshLength = this._meshLength;
 
       // 20文字のメッシュコード固定で考える。
       const FIELD_LENGTH = 20;
@@ -271,7 +271,7 @@ namespace jisX0410
       //本来はフィールドの全長だが1フィールドで
       const BYTES_PER_RECORD = 1 + FIELD_LENGTH;
       //データ総長 レコード数×フィールドの長さ
-      let dataLength = BYTES_PER_RECORD * meshLenght + 1;
+      let dataLength = BYTES_PER_RECORD * meshLength + 1;
       //ヘッダー+カラム説明+
       let dbfBufferLength = 32 + FIELD_DESC_LENGTH + dataLength;
 
@@ -287,7 +287,7 @@ namespace jisX0410
       dbfHeaderView.setUint8(2, nowDate.getMonth()); // UNSIGNED
       dbfHeaderView.setUint8(3, nowDate.getDate()); // UNSIGNED
       //レコード数
-      dbfHeaderView.setUint32(4, meshLenght, true); // LITTLE ENDIAN, UNSIGNED
+      dbfHeaderView.setUint32(4, meshLength, true); // LITTLE ENDIAN, UNSIGNED
       //ヘッダーの長さとフィールド説明の長さがヘッダの総長
       dbfHeaderView.setUint16(8, FIELD_DESC_LENGTH + 32, true);
       //レコード長
@@ -340,7 +340,7 @@ namespace jisX0410
      */
     private _calcMeshExtent(): void{
       let mesh = this._mesh;
-      let meshLenght = this._meshLength;
+      let meshLength = this._meshLength;
       
       // 5点の頂点の対角
        
@@ -351,8 +351,8 @@ namespace jisX0410
 
       let xmin = mesh[0].geometry[0][0];
       let ymin = mesh[0].geometry[0][1];
-      let xmax = mesh[meshLenght-1].geometry[2][0];
-      let ymax = mesh[meshLenght-1].geometry[2][1];
+      let xmax = mesh[meshLength-1].geometry[2][0];
+      let ymax = mesh[meshLength-1].geometry[2][1];
 
       this.fullExtent = {xmin:xmin, ymin:ymin,xmax:xmax,ymax:ymax};
     }//end method

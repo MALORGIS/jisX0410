@@ -9,7 +9,7 @@ namespace jisX0410
 
     shape:  [number,number] |  IExtent;
 
-    schemaLable: string;
+    schemaLabel: string;
 
     maxSchemaLabel: string;
   }//end interface
@@ -31,7 +31,7 @@ namespace jisX0410
   export class meshWorker{
     
     /** ワーカの保持 */
-    private _woker:Worker;
+    private _worker:Worker;
 
     /** コールバック処理の辞書 */
     private _callbacks: { [index:number]: (msg: IJSONResult | IShpResult ) => void } = {};
@@ -45,7 +45,7 @@ namespace jisX0410
       let worker = new Worker(url); 
       //メッセージイベントをセット
       worker.addEventListener('message', this._onMessage.bind(this), false);
-      this._woker = worker;
+      this._worker = worker;
       
     }//end method
 
@@ -58,8 +58,8 @@ namespace jisX0410
 
     (<any>msg)._system = Date.now();
     this._callbacks[(<any>msg)._system] = callback;
-    //this._woker.postMessage( JSON.stringify(msg) );
-    this._woker.postMessage( msg );
+    
+    this._worker.postMessage( msg );
    }//end method
 
    /**
@@ -95,7 +95,7 @@ if (typeof addEventListener !== 'undefined') {
     //シリアル化のため既定のスキーマ以外は現状受け取り不可
     for (let i=0; i<meshUtil.meshSchemes.length; i++){
 
-      if (message.schemaLable === meshUtil.meshSchemes[i].label){
+      if (message.schemaLabel === meshUtil.meshSchemes[i].label){
         schema = meshUtil.meshSchemes[i];
       }//end if
       if (message.maxSchemaLabel && 
