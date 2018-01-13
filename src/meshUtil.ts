@@ -337,6 +337,44 @@ namespace jisX0410
 
       return this._jsonToArrayBuffer(features, headerString, footerString);
     }//end method
+
+    /**
+     * メッシュコード文字列からメッシュ構造を返却
+     * 10分の1 細分区画(約100m四方)と20分の1 細分区画(約50m四方)のメッシュコードはコード体系不明のため入力しないでください。
+     * @param meshCode メッシュコード文字列
+     */
+    public meshCode2Schema(meshCode:string): meshSchema {
+/*
+1次: 4桁
+2次: 6桁
+5倍: 7桁
+2倍: 9桁 (末尾が必ず5)
+3次: 8桁
+2分の1: 9桁
+4分の1:10桁
+8分の1:11桁
+*/
+      //区切り文字を可能な限り排除
+      meshCode = meshCode.replace(/[-_.\s]/g, "");
+      if (meshCode.length === 4)
+        return this.meshSchemes[0];//一次メッシュ
+      else if (meshCode.length === 6)
+        return this.meshSchemes[1];//二次メッシュ
+      else if (meshCode.length === 7)
+        return this.meshSchemes[2];//5倍地域
+      else if (meshCode.length === 9 && meshCode[8] === "5")
+        return this.meshSchemes[3];//2倍地域
+      else if (meshCode.length === 8)
+        return this.meshSchemes[4];//標準地域'3
+      else if (meshCode.length === 9)
+        return this.meshSchemes[5];//2分の1'4
+      else if (meshCode.length === 10)
+        return this.meshSchemes[6];//4分の1'5
+      else if (meshCode.length === 11)
+        return this.meshSchemes[7];//8分の1'6
+
+      return undefined;
+    }//end method
     
     /**
      * GeoJSONないしesriJSONのフィーチャ配列を文字列バイナリ化

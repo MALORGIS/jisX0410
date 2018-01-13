@@ -135,6 +135,11 @@ describe('meshUtilTest', () => {
         if (mcd !== '7' && mcd !=='8'){
           let checkmeshCd: string = geoJ[0].properties.meshCode.replace(/-/g,'').replace(/_/g,'');
           assert.equal(checkmeshCd ,meshCode);
+
+          //メッシュコード文字列から構造取得をテスト
+          let checkSchema = meshUtil.meshCode2Schema(geoJ[0].properties.meshCode);
+          assert.equal(checkSchema.label, sc.label)
+
         }
 
         let coords:Array<[number, number]> = geoJ[0].geometry.coordinates[0];
