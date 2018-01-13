@@ -39,7 +39,7 @@ var jisX0410;
                     return preMeshInfo.meshCode + thisObj.splitString + String(r) + String(c);
                 });
             };
-            //3-6次メッシュコードと5倍地域メッシュの生成用コード
+            //4-6次メッシュコードと5倍地域メッシュの生成用コード
             var mesh4_6_getCode = function (latlon) {
                 var thisObj = this;
                 return meshSchema._getCodeBase(thisObj, latlon, function (preMeshInfo, r, c) {
@@ -71,39 +71,134 @@ var jisX0410;
                     return code;
                 });
             };
+            //1次メッシュコードからメッシュ情報
+            var mesh1cd2mesh = function (meshCode) {
+                //区切り文字を可能な限り排除
+                meshCode = meshCode.replace(/[-_.\s]/g, "");
+                if (meshCode.length !== 4)
+                    throw Error("Invalid mesh code.");
+                var r = parseInt(meshCode.slice(0, 2));
+                var c = parseInt(meshCode.slice(2, 4));
+                var lat = r / 15.0 * 10.0;
+                var lon = c + 100.0;
+                return { meshCode: meshCode, lat: lat, lon: lon };
+            };
+            //2次 3次メッシュコードからメッシュ情報
+            var mesh2_3cd2mesh = function (meshCode) {
+                var thisObj = this;
+                //区切り文字を可能な限り排除
+                meshCode = meshCode.replace(/[-_.\s]/g, "");
+                if (meshCode.length !== thisObj.meshCodeLength)
+                    throw Error("Invalid mesh code.");
+                var preInfo = thisObj.parent.meshCode2MeshInfo(meshCode.slice(0, thisObj.meshCodeLength - 2));
+                var r = parseInt(meshCode.slice(meshCode.length - 2, meshCode.length - 1));
+                var c = parseInt(meshCode.slice(meshCode.length - 1, meshCode.length));
+                return {
+                    meshCode: preInfo.meshCode + thisObj.splitString + String(r) + String(c),
+                    lat: preInfo.lat + (thisObj.heightDD * r),
+                    lon: preInfo.lon + (thisObj.widthDD * c)
+                };
+            };
+            //4次から6次(と5倍)メッシュコードからメッシュ情報
+            var mesh4_6cd2mesh = function (meshCode) {
+                var thisObj = this;
+                //区切り文字を可能な限り排除
+                meshCode = meshCode.replace(/[-_.\s]/g, "");
+                if (meshCode.length !== thisObj.meshCodeLength)
+                    throw Error("Invalid mesh code.");
+                var preInfo = thisObj.parent.meshCode2MeshInfo(meshCode.slice(0, thisObj.meshCodeLength - 1));
+                var r, c;
+                var cd = parseInt(meshCode.slice(meshCode.length - 1, meshCode.length));
+                //1 2は南
+                if (cd < 3) {
+                    r = 0;
+                }
+                else {
+                    r = 1;
+                } //end if
+                //2 4は東
+                if (cd % 2 == 0) {
+                    c = 1;
+                }
+                else {
+                    c = 0;
+                } //end if
+                return {
+                    meshCode: preInfo.meshCode + thisObj.splitString + cd,
+                    lat: preInfo.lat + (thisObj.heightDD * r),
+                    lon: preInfo.lon + (thisObj.widthDD * c)
+                };
+            }; //end method
+            //2倍地域メッシュ
+            var mesh3_2cd2mesh = function (meshCode) {
+                var thisObj = this;
+                //区切り文字を可能な限り排除
+                meshCode = meshCode.replace(/[-_.\s]/g, "");
+                if (meshCode.length !== thisObj.meshCodeLength)
+                    throw Error("Invalid mesh code.");
+                //末尾の5を落とす
+                var cd = meshCode.slice(0, meshCode.length - 1);
+                var preInfo = thisObj.parent.meshCode2MeshInfo(cd.slice(0, cd.length - 2));
+                var r = parseInt(meshCode.slice(cd.length - 2, cd.length - 1));
+                var c = parseInt(meshCode.slice(cd.length - 1, cd.length));
+                var code = String(r) + String(c) + '5';
+                r = r / 2;
+                c = c / 2;
+                return {
+                    meshCode: preInfo.meshCode + thisObj.splitString + code,
+                    lat: preInfo.lat + (thisObj.heightDD * r),
+                    lon: preInfo.lon + (thisObj.widthDD * c)
+                };
+            };
             var mesh1 = new meshSchema();
             mesh1.label = "第1次地域区画(約80km四方)";
             mesh1.widthDD = 1;
             mesh1.heightDD = 2 / 3;
+            mesh1.meshCodeLength = 4;
             mesh1.getMeshCode = mesh1_getCode.bind(mesh1);
+            mesh1.meshCode2MeshInfo = mesh1cd2mesh.bind(mesh1);
             var mesh2 = new meshSchema(mesh1, 8);
             mesh2.label = "第2次地域区画(約10km四方)";
             mesh2.splitString = "-";
+            mesh2.meshCodeLength = 6;
             mesh2.getMeshCode = mesh2_3_getCode.bind(mesh2);
+            mesh2.meshCode2MeshInfo = mesh2_3cd2mesh.bind(mesh2);
             var mesh3_5 = new meshSchema(mesh2, 2);
             mesh3_5.label = "5倍地域メッシュ(約5km四方)";
             mesh3_5.splitString = "-";
+            mesh3_5.meshCodeLength = 7;
             mesh3_5.getMeshCode = mesh4_6_getCode.bind(mesh3_5);
+            mesh3_5.meshCode2MeshInfo = mesh4_6cd2mesh.bind(mesh3_5);
             var mesh3_2 = new meshSchema(mesh2, 5);
             mesh3_2.label = "2倍地域メッシュ(約2km四方)";
             mesh3_2.splitString = "-";
+            mesh3_2.meshCodeLength = 9;
             mesh3_2.getMeshCode = mesh3_2_getCode.bind(mesh3_2);
+            mesh3_2.meshCode2MeshInfo = mesh3_2cd2mesh.bind(mesh3_2);
             var mesh3 = new meshSchema(mesh2, 10);
             mesh3.label = "基準地域メッシュ(約1km四方)";
             mesh3.splitString = "-";
+            mesh3.meshCodeLength = 8;
             mesh3.getMeshCode = mesh2_3_getCode.bind(mesh3);
+            mesh3.meshCode2MeshInfo = mesh2_3cd2mesh.bind(mesh3);
             var mesh4 = new meshSchema(mesh3, 2);
             mesh4.label = "2分の1地域メッシュ(約500m四方)";
             mesh4.splitString = "-";
+            mesh4.meshCodeLength = 9;
             mesh4.getMeshCode = mesh4_6_getCode.bind(mesh4);
+            mesh4.meshCode2MeshInfo = mesh4_6cd2mesh.bind(mesh4);
             var mesh5 = new meshSchema(mesh4, 2);
             mesh5.label = "4分の1地域メッシュ(約250m四方)";
             mesh5.splitString = "-";
+            mesh5.meshCodeLength = 10;
             mesh5.getMeshCode = mesh4_6_getCode.bind(mesh5);
+            mesh5.meshCode2MeshInfo = mesh4_6cd2mesh.bind(mesh5);
             var mesh6 = new meshSchema(mesh5, 2);
             mesh6.label = "8分の1地域メッシュ(約125m四方)";
             mesh6.splitString = "-";
+            mesh6.meshCodeLength = 11;
             mesh6.getMeshCode = mesh4_6_getCode.bind(mesh6);
+            mesh6.meshCode2MeshInfo = mesh4_6cd2mesh.bind(mesh6);
             var mesh7 = new meshSchema(mesh3, 10);
             mesh7.label = "10分の1 細分区画(約100m四方)";
             mesh7.splitString = "_";
@@ -117,19 +212,19 @@ var jisX0410;
                 // 0   1      2        3        4      5      6      7      8      9
                 mesh1, mesh2, mesh3_5, mesh3_2, mesh3, mesh4, mesh5, mesh6, mesh7, mesh8
             ];
-        }; //end mehtod
+        }; //end method
         /**
          * メッシュコード取得用の標準処理定義
          * @param thisObj メッシュスキーマ
          * @param latlon 緯度経度
-         * @param getCoods メッシュコード取得処理
+         * @param getCoords メッシュコード取得処理
          * @returns メッシュ情報
          */
-        meshSchema._getCodeBase = function (thisObj, latlon, getCoods) {
+        meshSchema._getCodeBase = function (thisObj, latlon, getCoords) {
             var preMeshInfo = thisObj.parent.getMeshCode(latlon);
             var r = Math.floor((latlon[0] - preMeshInfo.lat) / thisObj.heightDD);
             var c = Math.floor((latlon[1] - preMeshInfo.lon) / thisObj.widthDD);
-            var code = getCoods.bind(thisObj)(preMeshInfo, r, c);
+            var code = getCoords.bind(thisObj)(preMeshInfo, r, c);
             var lat = preMeshInfo.lat + (r * thisObj.heightDD);
             var lon = preMeshInfo.lon + (c * thisObj.widthDD);
             return { meshCode: code, lat: lat, lon: lon };
@@ -382,6 +477,42 @@ var jisX0410;
             return this._jsonToArrayBuffer(features, headerString, footerString);
         }; //end method
         /**
+         * メッシュコード文字列からメッシュ構造を返却
+         * 10分の1 細分区画(約100m四方)と20分の1 細分区画(約50m四方)のメッシュコードはコード体系不明のため入力しないでください。
+         * @param meshCode メッシュコード文字列
+         */
+        meshUtil.prototype.meshCode2Schema = function (meshCode) {
+            /*
+            1次: 4桁
+            2次: 6桁
+            5倍: 7桁
+            2倍: 9桁 (末尾が必ず5)
+            3次: 8桁
+            2分の1: 9桁
+            4分の1:10桁
+            8分の1:11桁
+            */
+            //区切り文字を可能な限り排除
+            meshCode = meshCode.replace(/[-_.\s]/g, "");
+            if (meshCode.length === 4)
+                return this.meshSchemes[0]; //一次メッシュ
+            else if (meshCode.length === 6)
+                return this.meshSchemes[1]; //二次メッシュ
+            else if (meshCode.length === 7)
+                return this.meshSchemes[2]; //5倍地域
+            else if (meshCode.length === 9 && meshCode[8] === "5")
+                return this.meshSchemes[3]; //2倍地域
+            else if (meshCode.length === 8)
+                return this.meshSchemes[4]; //標準地域'3
+            else if (meshCode.length === 9)
+                return this.meshSchemes[5]; //2分の1'4
+            else if (meshCode.length === 10)
+                return this.meshSchemes[6]; //4分の1'5
+            else if (meshCode.length === 11)
+                return this.meshSchemes[7]; //8分の1'6
+            return undefined;
+        }; //end method
+        /**
          * GeoJSONないしesriJSONのフィーチャ配列を文字列バイナリ化
          * @param features フィーチャ配列
          * @param headerString ヘッダ文字列
@@ -564,7 +695,7 @@ var jisX0410;
             //レコード情報136-8の128
             var SHX_RECORD_CONTENT_LENGTH = 128 / 2;
             // ヘッダ100とレコード数 * 8
-            var shxLenght = 100 + (8 * meshCount);
+            var shxLength = 100 + (8 * meshCount);
             //---------- dbf -------------
             //20文字のメッシュコード固定で考える。
             var FIELD_LENGTH = 20;
@@ -575,29 +706,29 @@ var jisX0410;
             //データ総長 レコード数×フィールドの長さ
             var dataLength = BYTES_PER_RECORD * meshCount + 1;
             //ヘッダー+カラム説明+
-            var dbfLenght = 32 + FIELD_DESC_LENGTH + dataLength;
+            var dbfLength = 32 + FIELD_DESC_LENGTH + dataLength;
             return {
                 shpLength: shpLength,
-                shxLenght: shxLenght,
-                dbfLenght: dbfLenght
+                shxLength: shxLength,
+                dbfLength: dbfLength
             };
         }; //end method
         /** SHPファイル生成処理 */
         shpFile.prototype._createShpBuffer = function () {
             //メッシュ定義受け取り
             var mesh = this._mesh;
-            var meshLenght = this._meshLength;
+            var meshLength = this._meshLength;
             // ヘッダ－:100  レコード:136 (情報:56/ポイント配列:16*5=80 5は頂点数)
             //レコード情報はポリゴンパート数で変動
-            var bufferLenght = 100 + (136 * meshLenght);
-            var shpBuffer = new ArrayBuffer(bufferLenght);
+            var bufferLength = 100 + (136 * meshLength);
+            var shpBuffer = new ArrayBuffer(bufferLength);
             //先頭100がヘッダ
             var shpHeaderView = new DataView(shpBuffer, 0, 100);
             //定型
             shpHeaderView.setInt32(0, 9994);
             shpHeaderView.setInt32(28, 1000, true);
             //最大長 shp file length in 16 bit words
-            shpHeaderView.setInt32(24, bufferLenght / 2);
+            shpHeaderView.setInt32(24, bufferLength / 2);
             //形状指定 : 1=point 3=polyline 5=polygon
             shpHeaderView.setInt32(32, 5, true);
             //最大範囲を指定
@@ -648,12 +779,12 @@ var jisX0410;
         /** shxインデックスファイル */
         shpFile.prototype._createInx = function () {
             var mesh = this._mesh;
-            var meshLenght = this._meshLength;
+            var meshLength = this._meshLength;
             var fullExtent = this.fullExtent;
             //レコード情報136-8の128
             var RECORD_CONTENT_LENGTH = 128 / 2;
             // ヘッダ100とレコード数 * 8
-            var shxBuffer = new ArrayBuffer(100 + 8 * meshLenght);
+            var shxBuffer = new ArrayBuffer(100 + 8 * meshLength);
             var shxHeaderView = new DataView(shxBuffer, 0, 100);
             //定型
             shxHeaderView.setInt32(0, 9994);
@@ -666,8 +797,8 @@ var jisX0410;
             shxHeaderView.setFloat64(52, fullExtent.xmax, true);
             shxHeaderView.setFloat64(60, fullExtent.ymax, true);
             //レコード数をセット
-            shxHeaderView.setInt32(24, (50 + meshLenght * 4));
-            var shxDataView = new DataView(shxBuffer, 100, 8 * meshLenght);
+            shxHeaderView.setInt32(24, (50 + meshLength * 4));
+            var shxDataView = new DataView(shxBuffer, 100, 8 * meshLength);
             mesh.map(function (val, index) {
                 //let shxDataView = new DataView(shxBuffer, 100 + 8 * index, 8);
                 //開始位置はindex * 8
@@ -683,7 +814,7 @@ var jisX0410;
         /** DBFファイルの作成 */
         shpFile.prototype._createDbf = function () {
             var mesh = this._mesh;
-            var meshLenght = this._meshLength;
+            var meshLength = this._meshLength;
             // 20文字のメッシュコード固定で考える。
             var FIELD_LENGTH = 20;
             // 32 * フィールド数 + 1
@@ -691,7 +822,7 @@ var jisX0410;
             //本来はフィールドの全長だが1フィールドで
             var BYTES_PER_RECORD = 1 + FIELD_LENGTH;
             //データ総長 レコード数×フィールドの長さ
-            var dataLength = BYTES_PER_RECORD * meshLenght + 1;
+            var dataLength = BYTES_PER_RECORD * meshLength + 1;
             //ヘッダー+カラム説明+
             var dbfBufferLength = 32 + FIELD_DESC_LENGTH + dataLength;
             //DBFのバイト配列
@@ -705,7 +836,7 @@ var jisX0410;
             dbfHeaderView.setUint8(2, nowDate.getMonth()); // UNSIGNED
             dbfHeaderView.setUint8(3, nowDate.getDate()); // UNSIGNED
             //レコード数
-            dbfHeaderView.setUint32(4, meshLenght, true); // LITTLE ENDIAN, UNSIGNED
+            dbfHeaderView.setUint32(4, meshLength, true); // LITTLE ENDIAN, UNSIGNED
             //ヘッダーの長さとフィールド説明の長さがヘッダの総長
             dbfHeaderView.setUint16(8, FIELD_DESC_LENGTH + 32, true);
             //レコード長
@@ -748,7 +879,7 @@ var jisX0410;
          */
         shpFile.prototype._calcMeshExtent = function () {
             var mesh = this._mesh;
-            var meshLenght = this._meshLength;
+            var meshLength = this._meshLength;
             // 5点の頂点の対角
             /*  1 2
              *  0 3
@@ -756,8 +887,8 @@ var jisX0410;
              */
             var xmin = mesh[0].geometry[0][0];
             var ymin = mesh[0].geometry[0][1];
-            var xmax = mesh[meshLenght - 1].geometry[2][0];
-            var ymax = mesh[meshLenght - 1].geometry[2][1];
+            var xmax = mesh[meshLength - 1].geometry[2][0];
+            var ymax = mesh[meshLength - 1].geometry[2][1];
             this.fullExtent = { xmin: xmin, ymin: ymin, xmax: xmax, ymax: ymax };
         }; //end method
         return shpFile;
@@ -778,7 +909,7 @@ var jisX0410;
             var worker = new Worker(url);
             //メッセージイベントをセット
             worker.addEventListener('message', this._onMessage.bind(this), false);
-            this._woker = worker;
+            this._worker = worker;
         } //end method
         /**
          * ワーカの処理実行
@@ -788,8 +919,7 @@ var jisX0410;
         meshWorker.prototype.postMessage = function (msg, callback) {
             msg._system = Date.now();
             this._callbacks[msg._system] = callback;
-            //this._woker.postMessage( JSON.stringify(msg) );
-            this._woker.postMessage(msg);
+            this._worker.postMessage(msg);
         }; //end method
         /**
          * ワーカからのメッセージ返却時
@@ -816,7 +946,7 @@ if (typeof addEventListener !== 'undefined') {
         var maxSchema;
         //シリアル化のため既定のスキーマ以外は現状受け取り不可
         for (var i = 0; i < meshUtil.meshSchemes.length; i++) {
-            if (message.schemaLable === meshUtil.meshSchemes[i].label) {
+            if (message.schemaLabel === meshUtil.meshSchemes[i].label) {
                 schema = meshUtil.meshSchemes[i];
             } //end if
             if (message.maxSchemaLabel &&

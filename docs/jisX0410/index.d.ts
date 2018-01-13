@@ -22,8 +22,12 @@ declare namespace jisX0410 {
         label: string;
         /** メッシュコードの分割文字列 */
         splitString: string;
+        /** 区切り文字を除いたメッシュコードの文字列長 */
+        meshCodeLength: number;
         /** メッシュコード取得関数 */
         getMeshCode: (latlon: [number, number]) => IMeshInfo;
+        /** メッシュコード文字列からメッシュ情報取得 */
+        meshCode2MeshInfo: (meshCode: string) => IMeshInfo;
         /**
          * コンストラクタ
          * @param parent  親メッシュ定義
@@ -38,10 +42,10 @@ declare namespace jisX0410 {
          * メッシュコード取得用の標準処理定義
          * @param thisObj メッシュスキーマ
          * @param latlon 緯度経度
-         * @param getCoods メッシュコード取得処理
+         * @param getCoords メッシュコード取得処理
          * @returns メッシュ情報
          */
-        private static _getCodeBase(thisObj, latlon, getCoods);
+        private static _getCodeBase(thisObj, latlon, getCoords);
     }
 }
 declare namespace jisX0410 {
@@ -147,6 +151,12 @@ declare namespace jisX0410 {
          */
         esriJsonToStringBuffer(features: Array<IEsriJsonFeature>): ArrayBuffer;
         /**
+         * メッシュコード文字列からメッシュ構造を返却
+         * 10分の1 細分区画(約100m四方)と20分の1 細分区画(約50m四方)のメッシュコードはコード体系不明のため入力しないでください。
+         * @param meshCode メッシュコード文字列
+         */
+        meshCode2Schema(meshCode: string): meshSchema;
+        /**
          * GeoJSONないしesriJSONのフィーチャ配列を文字列バイナリ化
          * @param features フィーチャ配列
          * @param headerString ヘッダ文字列
@@ -224,8 +234,8 @@ declare namespace jisX0410 {
          */
         static calcShpFileBytes(meshCount: number): {
             shpLength: number;
-            shxLenght: number;
-            dbfLenght: number;
+            shxLength: number;
+            dbfLength: number;
         };
         /** 作成するメッシュ定義の保持用 */
         private _mesh;
@@ -264,7 +274,7 @@ declare namespace jisX0410 {
         operation: "point" | "extent";
         format: "GeoJSON" | "esriJSON" | "shapefile";
         shape: [number, number] | IExtent;
-        schemaLable: string;
+        schemaLabel: string;
         maxSchemaLabel: string;
     }
     interface IJSONResult {
@@ -279,7 +289,7 @@ declare namespace jisX0410 {
     /** メッシュ作成用ワーカ */
     class meshWorker {
         /** ワーカの保持 */
-        private _woker;
+        private _worker;
         /** コールバック処理の辞書 */
         private _callbacks;
         /**

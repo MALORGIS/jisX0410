@@ -55,7 +55,7 @@ var samples;
             ];
             this._scope = $scope;
             var worker = new jisX0410.meshWorker('./jisX0410/index.js');
-            this._woker = worker;
+            this._worker = worker;
             this._meshUtil = new jisX0410.meshUtil();
             this.schemaList = this._meshUtil.meshSchemes;
             this.selectedSchema = this._meshUtil.meshSchemes[4];
@@ -183,11 +183,11 @@ var samples;
             var layer = layers.pop();
             var meshCd = layer.getPopup().getContent();
             var center = layer.getBounds().getCenter();
-            this._woker.postMessage({
+            this._worker.postMessage({
                 operation: "point",
                 format: this.format,
                 shape: [center.lat, center.lng],
-                schemaLable: this.selectedSchema.label,
+                schemaLabel: this.selectedSchema.label,
                 maxSchemaLabel: this.selectedMaxSchema.label
             }, function (evt) {
                 var dt = new Date();
@@ -234,11 +234,11 @@ var samples;
                 var ne = bounds.getNorthEast();
                 createArea = { xmin: sw.lng, ymin: sw.lat, xmax: ne.lng, ymax: ne.lat };
             }
-            this._woker.postMessage({
+            this._worker.postMessage({
                 operation: this.operation,
                 format: this.format,
                 shape: createArea,
-                schemaLable: this.selectedSchema.label,
+                schemaLabel: this.selectedSchema.label,
                 maxSchemaLabel: this.selectedMaxSchema.label
             }, function (evt) {
                 var dt = new Date();

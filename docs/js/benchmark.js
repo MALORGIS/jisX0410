@@ -12,7 +12,7 @@ var samples;
             this._scope = $scope;
             this._ngTableParams = NgTableParams;
             var worker = new jisX0410.meshWorker('./jisX0410/index.js');
-            this._woker = worker;
+            this._worker = worker;
             this._meshUtil = new jisX0410.meshUtil();
             this._setup();
         }
@@ -45,12 +45,12 @@ var samples;
             var latlon = [35, 135];
             var item = this._countSchema.pop();
             var start_ms = new Date().getTime();
-            var worker = this._woker;
+            var worker = this._worker;
             worker.postMessage({
                 operation: "point",
                 format: this.format,
                 shape: latlon,
-                schemaLable: item.schema.label,
+                schemaLabel: item.schema.label,
                 maxSchemaLabel: undefined
             }, function (msg) {
                 var elapsed_ms = new Date().getTime() - start_ms;
