@@ -85,6 +85,16 @@ html(ng-app='App')
             i.fa.fa-refresh.fa-spin.fa-fw(ng-show="ctrl.wait")
 
       #map
+        form.form-inline.my-2.my-lg-0
+          input.form-control.mr-sm-2(type='search', 
+            ng-model="ctrl.meshCodeText",
+            ng-keyup="$event.keyCode == 13 ? ctrl.moveMeshCode() : null;",
+            placeholder='メッシュコードを入力', aria-label='Search',style="z-index:99999")
+          button.btn.btn-success.my-2.my-sm-0(type='submit',
+            ng-disabled="!ctrl.canMoveMeshCode()",
+            ng-click="ctrl.moveMeshCode();",
+            style="z-index:99999") 移動
+
 
   //- 件数が多い際の処理分岐用確認ダイアログ
   #MyModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='確認ダイアログ', aria-hidden='true')

@@ -43,6 +43,9 @@ namespace samples {
     /** 制限とするメッシュ構造一覧 (作成するメッシュ構造の親) */
     public maxSchemaList: Array<jisX0410.meshSchema> = [];
 
+    /** メッシュコード値の入力用 */
+    public meshCodeText: string;
+
     /** 作成するメッシュデータのファイル形式 */
     public format: "GeoJSON" | "esriJSON" | "shapefile" = "GeoJSON";
     /** 作成可能なファイル形式の一覧 */
@@ -67,14 +70,20 @@ namespace samples {
       this.onChangeSchema();
 
       //マップの初期化処理
-      let map = new L.Map('map');
+      let map = new L.Map('map',{
+        zoomControl: false
+      });
+      L.control.zoom({
+        position:'topright'
+      }).addTo(map);
+
       this._map = map;
       //地図移動時のイベントを登録
       map.on('moveend', this._onMapMoveEnd.bind(this));
 
       (new GSILayer(GSILayerType.pale)).addTo(map);
       map.setView([35.0,135], 5);
-
+      
       //編集レイヤの初期化
       let editableLayers = new L.FeatureGroup();
       map.addLayer(editableLayers);
@@ -362,6 +371,37 @@ namespace samples {
 
       } );
 
+    }//end method
+
+    /**
+     * メッシュコード値入力で移動可能か
+     * @returns 移動可否
+     */
+    public canMoveMeshCode():boolean {
+      let meshCode = this.meshCodeText;
+      if (meshCode.trim().replace(/\s/g,"").length < 1){
+        return false;
+      }
+      return true;
+    }//end method
+
+    /** メッシュコード値の入力地点に移動 */
+    public moveMeshCode():void {
+
+      if (!this.canMoveMeshCode())
+        return;
+
+      let meshCode = this.meshCodeText;
+      let sc = this._meshUtil.meshCode2Schema(meshCode);
+      if (!sc)
+        return;
+      let info = sc.meshCode2MeshInfo(meshCode);
+      let lon = info.lon + sc.widthDD / 2.0;
+      let lat = info.lat + sc.heightDD / 2.0;
+
+      let map = this._map;
+      map.setView([lat, lon], map.getZoom());
+      
     }//end method
 
     /** 地図の移動終了時 */
