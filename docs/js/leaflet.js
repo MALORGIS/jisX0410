@@ -60,7 +60,12 @@ var samples;
             this.schemaList = this._meshUtil.meshSchemes;
             this.selectedSchema = this._meshUtil.meshSchemes[4];
             this.onChangeSchema();
-            var map = new L.Map('map');
+            var map = new L.Map('map', {
+                zoomControl: false
+            });
+            L.control.zoom({
+                position: 'topright'
+            }).addTo(map);
             this._map = map;
             map.on('moveend', this._onMapMoveEnd.bind(this));
             (new samples.GSILayer(samples.GSILayerType.pale)).addTo(map);
@@ -264,6 +269,26 @@ var samples;
                     _this._download(data.prj, "prj", nameBase);
                 }
             });
+        };
+        MapPageController.prototype.canMoveMeshCode = function () {
+            var meshCode = this.meshCodeText;
+            if (meshCode.trim().replace(/\s/g, "").length < 1) {
+                return false;
+            }
+            return true;
+        };
+        MapPageController.prototype.moveMeshCode = function () {
+            if (!this.canMoveMeshCode())
+                return;
+            var meshCode = this.meshCodeText;
+            var sc = this._meshUtil.meshCode2Schema(meshCode);
+            if (!sc)
+                return;
+            var info = sc.meshCode2MeshInfo(meshCode);
+            var lon = info.lon + sc.widthDD / 2.0;
+            var lat = info.lat + sc.heightDD / 2.0;
+            var map = this._map;
+            map.setView([lat, lon], map.getZoom());
         };
         MapPageController.prototype._onMapMoveEnd = function () {
             if (this.operation !== "point" || !this._map)
