@@ -18,7 +18,20 @@
       "request": "launch",
       "name": "LaunchServer",
       "program": "${workspaceFolder}/app.js"
-    }
+    },
+    //テストコードのデバッグ用
+    {
+      "name": "DebugTest",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      "args": ["tests/**/*.js", "--no-timeouts"],
+      "cwd": "${workspaceRoot}",
+      "runtimeExecutable": null,
+      "env": { "NODE_ENV": "testing"}
+  }
   ],
   //サーバ/クライアントを起動する
   "compounds": [
