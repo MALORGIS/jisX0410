@@ -54,9 +54,9 @@ var samples;
                 "GeoJSON", "esriJSON", "shapefile"
             ];
             this._scope = $scope;
-            var worker = new jisX0410.meshWorker('./jisX0410/index.js');
+            var worker = new jisX0410.MeshWorker('./jisX0410/index.js');
             this._worker = worker;
-            this._meshUtil = new jisX0410.meshUtil();
+            this._meshUtil = new jisX0410.MeshUtil();
             this.schemaList = this._meshUtil.meshSchemes;
             this.selectedSchema = this._meshUtil.meshSchemes[4];
             this.onChangeSchema();

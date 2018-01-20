@@ -11,9 +11,9 @@ var samples;
             ];
             this._scope = $scope;
             this._ngTableParams = NgTableParams;
-            var worker = new jisX0410.meshWorker('./jisX0410/index.js');
+            var worker = new jisX0410.MeshWorker('./jisX0410/index.js');
             this._worker = worker;
-            this._meshUtil = new jisX0410.meshUtil();
+            this._meshUtil = new jisX0410.MeshUtil();
             this._setup();
         }
         BenchmarkController.prototype._setup = function () {

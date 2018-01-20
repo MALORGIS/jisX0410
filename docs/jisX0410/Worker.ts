@@ -28,7 +28,7 @@ namespace jisX0410
   }//end interface
 
   /** メッシュ作成用ワーカ */
-  export class meshWorker{
+  export class MeshWorker{
     
     /** ワーカの保持 */
     private _worker:Worker;
@@ -88,19 +88,19 @@ if (typeof addEventListener !== 'undefined') {
     //event.data
     //let message = <jisX0410.IMessage> JSON.parse(event.data);
     let message = <jisX0410.IMessage> event.data;
-    let meshUtil  = new jisX0410.meshUtil();
-    let schema: jisX0410.meshSchema;
-    let maxSchema: jisX0410.meshSchema;
+    let MeshUtil  = new jisX0410.MeshUtil();
+    let schema: jisX0410.MeshSchema;
+    let maxSchema: jisX0410.MeshSchema;
 
     //シリアル化のため既定のスキーマ以外は現状受け取り不可
-    for (let i=0; i<meshUtil.meshSchemes.length; i++){
+    for (let i=0; i<MeshUtil.meshSchemes.length; i++){
 
-      if (message.schemaLabel === meshUtil.meshSchemes[i].label){
-        schema = meshUtil.meshSchemes[i];
+      if (message.schemaLabel === MeshUtil.meshSchemes[i].label){
+        schema = MeshUtil.meshSchemes[i];
       }//end if
       if (message.maxSchemaLabel && 
-          message.maxSchemaLabel === meshUtil.meshSchemes[i].label){
-        maxSchema = meshUtil.meshSchemes[i];
+          message.maxSchemaLabel === MeshUtil.meshSchemes[i].label){
+        maxSchema = MeshUtil.meshSchemes[i];
       }
 
     }//end loop
@@ -111,21 +111,21 @@ if (typeof addEventListener !== 'undefined') {
       switch(message.format)
       {
         case "GeoJSON":
-          let geofeatures = meshUtil.createGeoJSON(latlon, schema, maxSchema);
-          let geobuffer = meshUtil.geoJsonToStringBuffer(geofeatures);
+          let geofeatures = MeshUtil.createGeoJSON(latlon, schema, maxSchema);
+          let geobuffer = MeshUtil.geoJsonToStringBuffer(geofeatures);
           (<any>message).features = geobuffer
           postMessage( message, [geobuffer] );
           //postMessage( JSON.stringify(message) );
         break;
         case "esriJSON":
-          let esrifeatures = meshUtil.createEsriJSON(latlon,schema, maxSchema);
-          let esribuffer = meshUtil.esriJsonToStringBuffer(esrifeatures);
+          let esrifeatures = MeshUtil.createEsriJSON(latlon,schema, maxSchema);
+          let esribuffer = MeshUtil.esriJsonToStringBuffer(esrifeatures);
           (<any>message).features = esribuffer
           postMessage( message, [esribuffer] );
           //postMessage( JSON.stringify(message) );
         break;
         case "shapefile":
-          let shp = meshUtil.createShp(latlon, schema, maxSchema);
+          let shp = MeshUtil.createShp(latlon, schema, maxSchema);
           (<any>message).prj = shp.prj;
           (<any>message).shp = shp.shp;
           (<any>message).shx = shp.shx;
@@ -139,21 +139,21 @@ if (typeof addEventListener !== 'undefined') {
       switch(message.format)
       {
         case "GeoJSON":
-          let geofeatures = meshUtil.createGeoJsonFromExtent(extent, schema);
-          let geobuffer = meshUtil.geoJsonToStringBuffer(geofeatures);
+          let geofeatures = MeshUtil.createGeoJsonFromExtent(extent, schema);
+          let geobuffer = MeshUtil.geoJsonToStringBuffer(geofeatures);
           (<any>message).features = geobuffer;
           postMessage( message, [geobuffer]);
           //postMessage( JSON.stringify(message) );
         break;
         case "esriJSON":
-          let esrifeatures = meshUtil.createEsriJsonFromExtent(extent, schema);
-          let esribuffer = meshUtil.esriJsonToStringBuffer(esrifeatures);
+          let esrifeatures = MeshUtil.createEsriJsonFromExtent(extent, schema);
+          let esribuffer = MeshUtil.esriJsonToStringBuffer(esrifeatures);
           (<any>message).features = esribuffer;
           postMessage( message, [esribuffer]);
           //postMessage( JSON.stringify(message) );
         break;
         case "shapefile":
-          let shp = meshUtil.createShpFromExtent(extent, schema);
+          let shp = MeshUtil.createShpFromExtent(extent, schema);
           (<any>message).prj = shp.prj;
           (<any>message).shp = shp.shp;
           (<any>message).shx = shp.shx;

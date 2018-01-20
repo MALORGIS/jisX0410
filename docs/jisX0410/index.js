@@ -1,13 +1,13 @@
 var jisX0410;
 (function (jisX0410) {
     /** メッシュ定義の管理クラス */
-    var meshSchema = /** @class */ (function () {
+    var MeshSchema = /** @class */ (function () {
         /**
          * コンストラクタ
          * @param parent  親メッシュ定義
          * @param splitCount 分割数
          */
-        function meshSchema(parent, splitCount) {
+        function MeshSchema(parent, splitCount) {
             if (parent === void 0) { parent = undefined; }
             if (splitCount === void 0) { splitCount = undefined; }
             this.parent = parent;
@@ -20,7 +20,7 @@ var jisX0410;
         /**
          * 標準的なメッシュ定義の返却
          */
-        meshSchema.createStandardMesh = function () {
+        MeshSchema.createStandardMesh = function () {
             //1次メッシュコード生成用のコード
             var mesh1_getCode = function (latlon) {
                 var r = Math.round(Math.floor(latlon[0] * 15.0 / 10.0));
@@ -34,7 +34,7 @@ var jisX0410;
             //2-3次メッシュコード生成用のコード
             var mesh2_3_getCode = function (latlon) {
                 var thisObj = this;
-                return meshSchema._getCodeBase(thisObj, latlon, function (preMeshInfo, r, c) {
+                return MeshSchema._getCodeBase(thisObj, latlon, function (preMeshInfo, r, c) {
                     var thisObj = this;
                     return preMeshInfo.meshCode + thisObj.splitString + String(r) + String(c);
                 });
@@ -42,7 +42,7 @@ var jisX0410;
             //4-6次メッシュコードと5倍地域メッシュの生成用コード
             var mesh4_6_getCode = function (latlon) {
                 var thisObj = this;
-                return meshSchema._getCodeBase(thisObj, latlon, function (preMeshInfo, r, c) {
+                return MeshSchema._getCodeBase(thisObj, latlon, function (preMeshInfo, r, c) {
                     var thisObj = this;
                     var code = r < 1 ? String(c + 1) : String(c + 1 + 2);
                     code = preMeshInfo.meshCode + thisObj.splitString + code;
@@ -52,7 +52,7 @@ var jisX0410;
             //2倍地域メッシュの生成コード
             var mesh3_2_getCode = function (latlon) {
                 var thisObj = this;
-                return meshSchema._getCodeBase(thisObj, latlon, function (preMeshInfo, r, c) {
+                return MeshSchema._getCodeBase(thisObj, latlon, function (preMeshInfo, r, c) {
                     var thisObj = this;
                     var MESH_ID = ["0", "2", "4", "6", "8"];
                     var code = MESH_ID[r] + MESH_ID[c] + '5';
@@ -63,7 +63,7 @@ var jisX0410;
             //10分の1・20分の1細分区画のメッシュコード生成コード ( 明確な規定がなさそうので適当にRCを文字化 )
             var mesh7_8_getCode = function (latlon) {
                 var thisObj = this;
-                return meshSchema._getCodeBase(thisObj, latlon, function (preMeshInfo, r, c) {
+                return MeshSchema._getCodeBase(thisObj, latlon, function (preMeshInfo, r, c) {
                     var thisObj = this;
                     //文字列化して0埋め
                     var code = ('00' + String(r)).slice(-2) + thisObj.splitString + ('00' + String(c)).slice(-2);
@@ -150,60 +150,60 @@ var jisX0410;
                     lon: preInfo.lon + (thisObj.widthDD * c)
                 };
             };
-            var mesh1 = new meshSchema();
+            var mesh1 = new MeshSchema();
             mesh1.label = "第1次地域区画(約80km四方)";
             mesh1.widthDD = 1;
             mesh1.heightDD = 2 / 3;
             mesh1.meshCodeLength = 4;
             mesh1.getMeshCode = mesh1_getCode.bind(mesh1);
             mesh1.meshCode2MeshInfo = mesh1cd2mesh.bind(mesh1);
-            var mesh2 = new meshSchema(mesh1, 8);
+            var mesh2 = new MeshSchema(mesh1, 8);
             mesh2.label = "第2次地域区画(約10km四方)";
             mesh2.splitString = "-";
             mesh2.meshCodeLength = 6;
             mesh2.getMeshCode = mesh2_3_getCode.bind(mesh2);
             mesh2.meshCode2MeshInfo = mesh2_3cd2mesh.bind(mesh2);
-            var mesh3_5 = new meshSchema(mesh2, 2);
+            var mesh3_5 = new MeshSchema(mesh2, 2);
             mesh3_5.label = "5倍地域メッシュ(約5km四方)";
             mesh3_5.splitString = "-";
             mesh3_5.meshCodeLength = 7;
             mesh3_5.getMeshCode = mesh4_6_getCode.bind(mesh3_5);
             mesh3_5.meshCode2MeshInfo = mesh4_6cd2mesh.bind(mesh3_5);
-            var mesh3_2 = new meshSchema(mesh2, 5);
+            var mesh3_2 = new MeshSchema(mesh2, 5);
             mesh3_2.label = "2倍地域メッシュ(約2km四方)";
             mesh3_2.splitString = "-";
             mesh3_2.meshCodeLength = 9;
             mesh3_2.getMeshCode = mesh3_2_getCode.bind(mesh3_2);
             mesh3_2.meshCode2MeshInfo = mesh3_2cd2mesh.bind(mesh3_2);
-            var mesh3 = new meshSchema(mesh2, 10);
+            var mesh3 = new MeshSchema(mesh2, 10);
             mesh3.label = "基準地域メッシュ(約1km四方)";
             mesh3.splitString = "-";
             mesh3.meshCodeLength = 8;
             mesh3.getMeshCode = mesh2_3_getCode.bind(mesh3);
             mesh3.meshCode2MeshInfo = mesh2_3cd2mesh.bind(mesh3);
-            var mesh4 = new meshSchema(mesh3, 2);
+            var mesh4 = new MeshSchema(mesh3, 2);
             mesh4.label = "2分の1地域メッシュ(約500m四方)";
             mesh4.splitString = "-";
             mesh4.meshCodeLength = 9;
             mesh4.getMeshCode = mesh4_6_getCode.bind(mesh4);
             mesh4.meshCode2MeshInfo = mesh4_6cd2mesh.bind(mesh4);
-            var mesh5 = new meshSchema(mesh4, 2);
+            var mesh5 = new MeshSchema(mesh4, 2);
             mesh5.label = "4分の1地域メッシュ(約250m四方)";
             mesh5.splitString = "-";
             mesh5.meshCodeLength = 10;
             mesh5.getMeshCode = mesh4_6_getCode.bind(mesh5);
             mesh5.meshCode2MeshInfo = mesh4_6cd2mesh.bind(mesh5);
-            var mesh6 = new meshSchema(mesh5, 2);
+            var mesh6 = new MeshSchema(mesh5, 2);
             mesh6.label = "8分の1地域メッシュ(約125m四方)";
             mesh6.splitString = "-";
             mesh6.meshCodeLength = 11;
             mesh6.getMeshCode = mesh4_6_getCode.bind(mesh6);
             mesh6.meshCode2MeshInfo = mesh4_6cd2mesh.bind(mesh6);
-            var mesh7 = new meshSchema(mesh3, 10);
+            var mesh7 = new MeshSchema(mesh3, 10);
             mesh7.label = "10分の1 細分区画(約100m四方)";
             mesh7.splitString = "_";
             mesh7.getMeshCode = mesh7_8_getCode.bind(mesh7);
-            var mesh8 = new meshSchema(mesh3, 20);
+            var mesh8 = new MeshSchema(mesh3, 20);
             mesh8.label = "20分の1 細分区画(約50m四方)";
             mesh8.splitString = "_";
             mesh8.getMeshCode = mesh7_8_getCode.bind(mesh8);
@@ -220,7 +220,7 @@ var jisX0410;
          * @param getCoords メッシュコード取得処理
          * @returns メッシュ情報
          */
-        meshSchema._getCodeBase = function (thisObj, latlon, getCoords) {
+        MeshSchema._getCodeBase = function (thisObj, latlon, getCoords) {
             var preMeshInfo = thisObj.parent.getMeshCode(latlon);
             var r = Math.floor((latlon[0] - preMeshInfo.lat) / thisObj.heightDD);
             var c = Math.floor((latlon[1] - preMeshInfo.lon) / thisObj.widthDD);
@@ -229,29 +229,29 @@ var jisX0410;
             var lon = preMeshInfo.lon + (c * thisObj.widthDD);
             return { meshCode: code, lat: lat, lon: lon };
         }; //end method
-        return meshSchema;
+        return MeshSchema;
     }()); //end class
-    jisX0410.meshSchema = meshSchema;
+    jisX0410.MeshSchema = MeshSchema;
 })(jisX0410 || (jisX0410 = {})); //end namespace
-/// <reference path="meshSchema.ts" />import { json } from "../node_modules/@types/body-parser/index";
+/// <reference path="MeshSchema.ts" />import { json } from "../node_modules/@types/body-parser/index";
 var jisX0410;
-/// <reference path="meshSchema.ts" />import { json } from "../node_modules/@types/body-parser/index";
+/// <reference path="MeshSchema.ts" />import { json } from "../node_modules/@types/body-parser/index";
 (function (jisX0410) {
     /**
      * メッシュ管理クラス
      */
-    var meshUtil = /** @class */ (function () {
+    var MeshUtil = /** @class */ (function () {
         /** コンストラクタ */
-        function meshUtil() {
+        function MeshUtil() {
             /** メッシュ情報定義 */
-            this.meshSchemes = jisX0410.meshSchema.createStandardMesh();
+            this.meshSchemes = jisX0410.MeshSchema.createStandardMesh();
         } //end method
         /**
          *
          * @param extent
          * @param schema
          */
-        meshUtil.prototype.calcMeshCountFromExtent = function (extent, schema) {
+        MeshUtil.prototype.calcMeshCountFromExtent = function (extent, schema) {
             //左下隅のメッシュを取得して左下隅座標を書き換え
             var leftLower = this._getMeshInfoFromBl([extent.ymin, extent.xmin], schema);
             var minXY = leftLower.coords[0];
@@ -267,7 +267,7 @@ var jisX0410;
          * @param schema メッシュ構造
          * @returns GeoJsonFeature Array
          */
-        meshUtil.prototype.createGeoJsonFromExtent = function (extent, schema) {
+        MeshUtil.prototype.createGeoJsonFromExtent = function (extent, schema) {
             //左下隅のメッシュを取得して左下隅座標を書き換え
             var leftLower = this._getMeshInfoFromBl([extent.ymin, extent.xmin], schema);
             var minXY = leftLower.coords[0];
@@ -298,7 +298,7 @@ var jisX0410;
          * @param schema メッシュ構造
          * @returns GeoJsonFeature Array
          */
-        meshUtil.prototype.createEsriJsonFromExtent = function (extent, schema) {
+        MeshUtil.prototype.createEsriJsonFromExtent = function (extent, schema) {
             //左下隅のメッシュを取得して左下隅座標を書き換え
             var leftLower = this._getMeshInfoFromBl([extent.ymin, extent.xmin], schema);
             var minXY = leftLower.coords[0];
@@ -329,7 +329,7 @@ var jisX0410;
          * @param schema メッシュ構造
          * @returns GeoJsonFeature Array
          */
-        meshUtil.prototype.createShpFromExtent = function (extent, schema, shpOpt) {
+        MeshUtil.prototype.createShpFromExtent = function (extent, schema, shpOpt) {
             if (shpOpt === void 0) { shpOpt = undefined; }
             //左下隅のメッシュを取得して左下隅座標を書き換え
             var leftLower = this._getMeshInfoFromBl([extent.ymin, extent.xmin], schema);
@@ -357,7 +357,7 @@ var jisX0410;
                 };
             } //end loop index
             //SHPの返却
-            return new jisX0410.shpFile(results, shpOpt);
+            return new jisX0410.ShpFile(results, shpOpt);
         }; //end method
         /**
          * メッシュ件数の計算
@@ -365,7 +365,7 @@ var jisX0410;
          * @param maxSchema 上位メッシュ構造
          * @returns 件数
          */
-        meshUtil.prototype.calcMeshCount = function (schema, maxSchema) {
+        MeshUtil.prototype.calcMeshCount = function (schema, maxSchema) {
             if (maxSchema === void 0) { maxSchema = undefined; }
             //分割数をリセット
             this._divCount = 1;
@@ -379,7 +379,7 @@ var jisX0410;
          * @param maxSchema 作成上限メッシュ構造(省略可)
          * @returns GeoJSON Feature配列
          */
-        meshUtil.prototype.createGeoJSON = function (latlon, schema, maxSchema) {
+        MeshUtil.prototype.createGeoJSON = function (latlon, schema, maxSchema) {
             if (maxSchema === void 0) { maxSchema = undefined; }
             //分割数をリセット
             this._divCount = 1;
@@ -405,7 +405,7 @@ var jisX0410;
          * @param maxSchema 作成上限メッシュ構造(省略可)
          * @returns ESRI JSON定義 配列
          */
-        meshUtil.prototype.createEsriJSON = function (latlon, schema, maxSchema) {
+        MeshUtil.prototype.createEsriJSON = function (latlon, schema, maxSchema) {
             if (maxSchema === void 0) { maxSchema = undefined; }
             //分割数をリセット
             this._divCount = 1;
@@ -432,7 +432,7 @@ var jisX0410;
          * @param shpOpt 作成オプション
          * @returns shapefile
          */
-        meshUtil.prototype.createShp = function (latlon, schema, maxSchema, shpOpt) {
+        MeshUtil.prototype.createShp = function (latlon, schema, maxSchema, shpOpt) {
             if (maxSchema === void 0) { maxSchema = undefined; }
             if (shpOpt === void 0) { shpOpt = undefined; }
             //分割数をリセット
@@ -454,14 +454,14 @@ var jisX0410;
             }
             ;
             //SHPの返却
-            return new jisX0410.shpFile(features, shpOpt);
+            return new jisX0410.ShpFile(features, shpOpt);
         }; //end method
         /**
          * GeoJSONフィーチャ配列を文字列バイナリ化
          * @param features GeoJSON Feature Array
          * @returns ArrayBuffer
          */
-        meshUtil.prototype.geoJsonToStringBuffer = function (features) {
+        MeshUtil.prototype.geoJsonToStringBuffer = function (features) {
             var headerString = '{ "type": "FeatureCollection", "features":[';
             var footerString = ']}';
             return this._jsonToArrayBuffer(features, headerString, footerString);
@@ -471,7 +471,7 @@ var jisX0410;
          * @param features esri JSON Feature Array
          * @returns ArrayBuffer
          */
-        meshUtil.prototype.esriJsonToStringBuffer = function (features) {
+        MeshUtil.prototype.esriJsonToStringBuffer = function (features) {
             var headerString = '{ "displayFieldName" : "meshCode", "fieldAliases": { "meshCode" : "meshCode" }, "fields" : [{ "name" : "meshCode", "type" : "esriFieldTypeString", "alias" : "meshCode", "length" : 15}], "features":[';
             var footerString = ']}';
             return this._jsonToArrayBuffer(features, headerString, footerString);
@@ -481,7 +481,7 @@ var jisX0410;
          * 10分の1 細分区画(約100m四方)と20分の1 細分区画(約50m四方)のメッシュコードはコード体系不明のため入力しないでください。
          * @param meshCode メッシュコード文字列
          */
-        meshUtil.prototype.meshCode2Schema = function (meshCode) {
+        MeshUtil.prototype.meshCode2Schema = function (meshCode) {
             /*
             1次: 4桁
             2次: 6桁
@@ -519,7 +519,7 @@ var jisX0410;
          * @param footerString フッタ文字列
          * @returns 文字列バイナリ
          */
-        meshUtil.prototype._jsonToArrayBuffer = function (features, headerString, footerString) {
+        MeshUtil.prototype._jsonToArrayBuffer = function (features, headerString, footerString) {
             var meshCount = features.length;
             //let recordLength = JSON.stringify(features[0]).length;
             //可変長なのでしょうがなくサイズ計算
@@ -563,7 +563,7 @@ var jisX0410;
          * @param divCount 分割数
          * @returns メッシュ情報
          */
-        meshUtil.prototype._getMeshInfo = function (schema, rootsInfo, index, divCount) {
+        MeshUtil.prototype._getMeshInfo = function (schema, rootsInfo, index, divCount) {
             //行列を計算
             var r = Math.floor(index / divCount);
             var c = index % divCount;
@@ -579,7 +579,7 @@ var jisX0410;
          * @param schema メッシュ構造
          * @returns メッシュ情報
          */
-        meshUtil.prototype._getMeshInfoFromBl = function (latlon, schema) {
+        MeshUtil.prototype._getMeshInfoFromBl = function (latlon, schema) {
             //メッシュコード取得
             var meshInfo = schema.getMeshCode(latlon);
             // 時計回りでまわしておく
@@ -601,7 +601,7 @@ var jisX0410;
          * @param maxSchema 親がこれならここまでとなる定義
          * @returns 指定した親スキーマ (無指定時は1次メッシュ)
          */
-        meshUtil.prototype._getRootsMeshSchema = function (schema, maxSchema) {
+        MeshUtil.prototype._getRootsMeshSchema = function (schema, maxSchema) {
             //親がいなければ根っこ
             if (!schema.parent && maxSchema === undefined)
                 return schema;
@@ -618,7 +618,7 @@ var jisX0410;
          * @param mesh メッシュ情報
          * @returns GeoJsonFeature
          */
-        meshUtil.prototype._toGeoJson = function (mesh) {
+        MeshUtil.prototype._toGeoJson = function (mesh) {
             return { "type": "Feature",
                 "geometry": {
                     "type": "Polygon",
@@ -634,7 +634,7 @@ var jisX0410;
          * @param mesh メッシュ情報
          * @returns EsriJsonFeatureの作成
          */
-        meshUtil.prototype._toEsriJson = function (mesh) {
+        MeshUtil.prototype._toEsriJson = function (mesh) {
             //esri feature定義
             return {
                 "geometry": { "rings": [mesh.coords] },
@@ -643,22 +643,22 @@ var jisX0410;
                 }
             };
         };
-        return meshUtil;
+        return MeshUtil;
     }()); //end class
-    jisX0410.meshUtil = meshUtil;
+    jisX0410.MeshUtil = MeshUtil;
 })(jisX0410 || (jisX0410 = {})); //end namespace
 var jisX0410;
 (function (jisX0410) {
     /** JGD2KのESRI WKT */
     var JGD2K = 'GEOGCS["JGD2000",DATUM["D_Japanese Geodetic Datum 2000",SPHEROID["GRS_1980",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.017453292519943295]]';
     /** メッシュ用 shapefile作成クラス */
-    var shpFile = /** @class */ (function () {
+    var ShpFile = /** @class */ (function () {
         /**
          * コンストラクタ
          * @param mesh 作成メッシュ定義
          * @param options 作成オプション
          */
-        function shpFile(mesh, options) {
+        function ShpFile(mesh, options) {
             if (options === void 0) { options = { shp: true, shx: true, dbf: true, prj: true }; }
             //クラス変数にセット
             this._mesh = mesh;
@@ -686,7 +686,7 @@ var jisX0410;
          * @param meshCount メッシュ件数
          * @returns shapefileのバイトサイズ
          */
-        shpFile.calcShpFileBytes = function (meshCount) {
+        ShpFile.calcShpFileBytes = function (meshCount) {
             //---------- shp -------------
             // ヘッダ－:100  レコード:136 (情報:56/ポイント配列:16*5=80 5は頂点数)
             //レコード情報はポリゴンパート数で変動
@@ -714,7 +714,7 @@ var jisX0410;
             };
         }; //end method
         /** SHPファイル生成処理 */
-        shpFile.prototype._createShpBuffer = function () {
+        ShpFile.prototype._createShpBuffer = function () {
             //メッシュ定義受け取り
             var mesh = this._mesh;
             var meshLength = this._meshLength;
@@ -777,7 +777,7 @@ var jisX0410;
             this.shp = shpBuffer;
         }; //end method
         /** shxインデックスファイル */
-        shpFile.prototype._createInx = function () {
+        ShpFile.prototype._createInx = function () {
             var mesh = this._mesh;
             var meshLength = this._meshLength;
             var fullExtent = this.fullExtent;
@@ -812,7 +812,7 @@ var jisX0410;
             //return shxBuffer;
         };
         /** DBFファイルの作成 */
-        shpFile.prototype._createDbf = function () {
+        ShpFile.prototype._createDbf = function () {
             var mesh = this._mesh;
             var meshLength = this._meshLength;
             // 20文字のメッシュコード固定で考える。
@@ -877,7 +877,7 @@ var jisX0410;
         /**
          * 作成するメッシュの最大範囲を計算
          */
-        shpFile.prototype._calcMeshExtent = function () {
+        ShpFile.prototype._calcMeshExtent = function () {
             var mesh = this._mesh;
             var meshLength = this._meshLength;
             // 5点の頂点の対角
@@ -891,19 +891,19 @@ var jisX0410;
             var ymax = mesh[meshLength - 1].geometry[2][1];
             this.fullExtent = { xmin: xmin, ymin: ymin, xmax: xmax, ymax: ymax };
         }; //end method
-        return shpFile;
+        return ShpFile;
     }()); //end class
-    jisX0410.shpFile = shpFile;
+    jisX0410.ShpFile = ShpFile;
 })(jisX0410 || (jisX0410 = {})); //end method
 var jisX0410;
 (function (jisX0410) {
     /** メッシュ作成用ワーカ */
-    var meshWorker = /** @class */ (function () {
+    var MeshWorker = /** @class */ (function () {
         /**
          * コンストラクタ
          * @param url Worker.jsのURL
          */
-        function meshWorker(url) {
+        function MeshWorker(url) {
             /** コールバック処理の辞書 */
             this._callbacks = {};
             var worker = new Worker(url);
@@ -916,7 +916,7 @@ var jisX0410;
          * @param msg 処理命令
          * @param callback 処理完了時の実行
          */
-        meshWorker.prototype.postMessage = function (msg, callback) {
+        MeshWorker.prototype.postMessage = function (msg, callback) {
             msg._system = Date.now();
             this._callbacks[msg._system] = callback;
             this._worker.postMessage(msg);
@@ -925,15 +925,15 @@ var jisX0410;
          * ワーカからのメッセージ返却時
          * @param event イベント
          */
-        meshWorker.prototype._onMessage = function (event) {
+        MeshWorker.prototype._onMessage = function (event) {
             var result = event.data;
             var callback = this._callbacks[result._system];
             delete this._callbacks[result._system];
             callback(result);
         }; //end method
-        return meshWorker;
+        return MeshWorker;
     }()); //end class
-    jisX0410.meshWorker = meshWorker;
+    jisX0410.MeshWorker = MeshWorker;
 })(jisX0410 || (jisX0410 = {})); //end namespace
 //ブラウザ上でなければWebWorkerとして動作する準備をする
 if (typeof addEventListener !== 'undefined') {
@@ -941,38 +941,38 @@ if (typeof addEventListener !== 'undefined') {
         //event.data
         //let message = <jisX0410.IMessage> JSON.parse(event.data);
         var message = event.data;
-        var meshUtil = new jisX0410.meshUtil();
+        var MeshUtil = new jisX0410.MeshUtil();
         var schema;
         var maxSchema;
         //シリアル化のため既定のスキーマ以外は現状受け取り不可
-        for (var i = 0; i < meshUtil.meshSchemes.length; i++) {
-            if (message.schemaLabel === meshUtil.meshSchemes[i].label) {
-                schema = meshUtil.meshSchemes[i];
+        for (var i = 0; i < MeshUtil.meshSchemes.length; i++) {
+            if (message.schemaLabel === MeshUtil.meshSchemes[i].label) {
+                schema = MeshUtil.meshSchemes[i];
             } //end if
             if (message.maxSchemaLabel &&
-                message.maxSchemaLabel === meshUtil.meshSchemes[i].label) {
-                maxSchema = meshUtil.meshSchemes[i];
+                message.maxSchemaLabel === MeshUtil.meshSchemes[i].label) {
+                maxSchema = MeshUtil.meshSchemes[i];
             }
         } //end loop
         if (message.operation === "point") {
             var latlon = message.shape;
             switch (message.format) {
                 case "GeoJSON":
-                    var geofeatures = meshUtil.createGeoJSON(latlon, schema, maxSchema);
-                    var geobuffer = meshUtil.geoJsonToStringBuffer(geofeatures);
+                    var geofeatures = MeshUtil.createGeoJSON(latlon, schema, maxSchema);
+                    var geobuffer = MeshUtil.geoJsonToStringBuffer(geofeatures);
                     message.features = geobuffer;
                     postMessage(message, [geobuffer]);
                     //postMessage( JSON.stringify(message) );
                     break;
                 case "esriJSON":
-                    var esrifeatures = meshUtil.createEsriJSON(latlon, schema, maxSchema);
-                    var esribuffer = meshUtil.esriJsonToStringBuffer(esrifeatures);
+                    var esrifeatures = MeshUtil.createEsriJSON(latlon, schema, maxSchema);
+                    var esribuffer = MeshUtil.esriJsonToStringBuffer(esrifeatures);
                     message.features = esribuffer;
                     postMessage(message, [esribuffer]);
                     //postMessage( JSON.stringify(message) );
                     break;
                 case "shapefile":
-                    var shp = meshUtil.createShp(latlon, schema, maxSchema);
+                    var shp = MeshUtil.createShp(latlon, schema, maxSchema);
                     message.prj = shp.prj;
                     message.shp = shp.shp;
                     message.shx = shp.shx;
@@ -986,21 +986,21 @@ if (typeof addEventListener !== 'undefined') {
             var extent = message.shape;
             switch (message.format) {
                 case "GeoJSON":
-                    var geofeatures = meshUtil.createGeoJsonFromExtent(extent, schema);
-                    var geobuffer = meshUtil.geoJsonToStringBuffer(geofeatures);
+                    var geofeatures = MeshUtil.createGeoJsonFromExtent(extent, schema);
+                    var geobuffer = MeshUtil.geoJsonToStringBuffer(geofeatures);
                     message.features = geobuffer;
                     postMessage(message, [geobuffer]);
                     //postMessage( JSON.stringify(message) );
                     break;
                 case "esriJSON":
-                    var esrifeatures = meshUtil.createEsriJsonFromExtent(extent, schema);
-                    var esribuffer = meshUtil.esriJsonToStringBuffer(esrifeatures);
+                    var esrifeatures = MeshUtil.createEsriJsonFromExtent(extent, schema);
+                    var esribuffer = MeshUtil.esriJsonToStringBuffer(esrifeatures);
                     message.features = esribuffer;
                     postMessage(message, [esribuffer]);
                     //postMessage( JSON.stringify(message) );
                     break;
                 case "shapefile":
-                    var shp = meshUtil.createShpFromExtent(extent, schema);
+                    var shp = MeshUtil.createShpFromExtent(extent, schema);
                     message.prj = shp.prj;
                     message.shp = shp.shp;
                     message.shx = shp.shx;

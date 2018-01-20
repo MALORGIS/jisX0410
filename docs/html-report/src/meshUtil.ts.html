@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Code coverage report for src\meshUtil.ts</title>
+    <title>Code coverage report for src\MeshUtil.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -16,7 +16,7 @@
 <div class='wrapper'>
   <div class='pad1'>
     <h1>
-      <a href="../index.html">all files</a> / <a href="index.html">src/</a> meshUtil.ts
+      <a href="../index.html">all files</a> / <a href="index.html">src/</a> MeshUtil.ts
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
@@ -1111,7 +1111,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/// &lt;reference path="meshSchema.ts" /&gt;import { json } from "../node_modules/@types/body-parser/index";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/// &lt;reference path="MeshSchema.ts" /&gt;import { json } from "../node_modules/@types/body-parser/index";
 &nbsp;
 &nbsp;
 &nbsp;
@@ -1151,10 +1151,10 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
   /**
    * メッシュ管理クラス
    */
-  export class meshUtil
+  export class MeshUtil
   {
     /** メッシュ情報定義 */
-    public meshSchemes: Array&lt;meshSchema&gt; = meshSchema.createStandardMesh();
+    public meshSchemes: Array&lt;MeshSchema&gt; = MeshSchema.createStandardMesh();
 &nbsp;
     /** 分割数 */
     private _divCount: number;
@@ -1169,7 +1169,7 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
      * @param extent 
      * @param schema 
      */
-    public calcMeshCountFromExtent(extent:IExtent, schema:meshSchema)
+    public calcMeshCountFromExtent(extent:IExtent, schema:MeshSchema)
       : number {
       //左下隅のメッシュを取得して左下隅座標を書き換え
       let leftLower = this._getMeshInfoFromBl([extent.ymin,extent.xmin], schema);
@@ -1190,7 +1190,7 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
      * @param schema メッシュ構造
      * @returns GeoJsonFeature Array
      */
-    public createGeoJsonFromExtent(extent:IExtent, schema:meshSchema)
+    public createGeoJsonFromExtent(extent:IExtent, schema:MeshSchema)
       : Array&lt;IGeoJsonFeature&gt; {
       
       //左下隅のメッシュを取得して左下隅座標を書き換え
@@ -1230,7 +1230,7 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
      * @param schema メッシュ構造
      * @returns GeoJsonFeature Array
      */
-    public createEsriJsonFromExtent(extent:IExtent, schema:meshSchema)
+    public createEsriJsonFromExtent(extent:IExtent, schema:MeshSchema)
       : Array&lt;IEsriJsonFeature&gt; {
       
       //左下隅のメッシュを取得して左下隅座標を書き換え
@@ -1269,8 +1269,8 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
      * @param schema メッシュ構造
      * @returns GeoJsonFeature Array
      */
-    public createShpFromExtent(extent:IExtent, schema:meshSchema,<span class="missing-if-branch" title="else path not taken" >E</span>shpOpt:IShpCreateOption = undefined)
-    : shpFile {
+    public createShpFromExtent(extent:IExtent, schema:MeshSchema,<span class="missing-if-branch" title="else path not taken" >E</span>shpOpt:IShpCreateOption = undefined)
+    : ShpFile {
       
       //左下隅のメッシュを取得して左下隅座標を書き換え
       let leftLower = this._getMeshInfoFromBl([extent.ymin,extent.xmin], schema);
@@ -1303,7 +1303,7 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
       }//end loop index
       
       //SHPの返却
-      return new shpFile(results, shpOpt);
+      return new ShpFile(results, shpOpt);
     }//end method
     
 &nbsp;
@@ -1313,8 +1313,8 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
      * @param maxSchema 上位メッシュ構造
      * @returns 件数
      */
-    public calcMeshCount(schema: meshSchema,
-                         maxSchema:meshSchema = undefined): number{
+    public calcMeshCount(schema: MeshSchema,
+                         maxSchema:MeshSchema = undefined): number{
       //分割数をリセット
       this._divCount = 1;
       let roots = this._getRootsMeshSchema(schema, maxSchema);
@@ -1330,8 +1330,8 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
      * @returns GeoJSON Feature配列
      */
     public createGeoJSON(latlon:[number, number],
-                         schema:meshSchema,
-                         maxSchema:meshSchema = undefined)
+                         schema:MeshSchema,
+                         maxSchema:MeshSchema = undefined)
       : Array&lt;IGeoJsonFeature&gt;
     {
       //分割数をリセット
@@ -1363,8 +1363,8 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
      * @returns ESRI JSON定義 配列
      */
     public createEsriJSON(latlon:[number, number], 
-                          schema:meshSchema,
-                          maxSchema:meshSchema = undefined) 
+                          schema:MeshSchema,
+                          maxSchema:MeshSchema = undefined) 
       : Array&lt;IEsriJsonFeature&gt;
     {
       //分割数をリセット
@@ -1398,10 +1398,10 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
      * @returns shapefile
      */
     public createShp(latlon:[number, number], 
-                     schema:meshSchema, 
-                     maxSchema:meshSchema = undefined,
+                     schema:MeshSchema, 
+                     maxSchema:MeshSchema = undefined,
                      shpOpt:IShpCreateOption = undefined) 
-      :shpFile
+      :ShpFile
     {
       //分割数をリセット
       this._divCount = 1;
@@ -1424,7 +1424,7 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
       };
 &nbsp;
       //SHPの返却
-      return new shpFile(features, shpOpt);
+      return new ShpFile(features, shpOpt);
     }//end method
 &nbsp;
     /**
@@ -1456,7 +1456,7 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
      * 10分の1 細分区画(約100m四方)と20分の1 細分区画(約50m四方)のメッシュコードはコード体系不明のため入力しないでください。
      * @param meshCode メッシュコード文字列
      */
-    public meshCode2Schema(meshCode:string): meshSchema {
+    public meshCode2Schema(meshCode:string): MeshSchema {
 /*
 1次: 4桁
 2次: 6桁
@@ -1549,7 +1549,7 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
      * @returns メッシュ情報
      */
     private _getMeshInfo(
-      schema:meshSchema, 
+      schema:MeshSchema, 
       rootsInfo:IMeshInfo,
       index:number,
       divCount:number): IMesh
@@ -1570,7 +1570,7 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
      * @param schema メッシュ構造
      * @returns メッシュ情報
      */
-    private _getMeshInfoFromBl(latlon:[number,number], schema:meshSchema): IMesh {
+    private _getMeshInfoFromBl(latlon:[number,number], schema:MeshSchema): IMesh {
       //メッシュコード取得
       var meshInfo = schema.getMeshCode(latlon);
       
@@ -1594,7 +1594,7 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
      * @param maxSchema 親がこれならここまでとなる定義
      * @returns 指定した親スキーマ (無指定時は1次メッシュ)
      */
-    private _getRootsMeshSchema(schema:meshSchema, maxSchema:meshSchema): meshSchema
+    private _getRootsMeshSchema(schema:MeshSchema, maxSchema:MeshSchema): MeshSchema
     {
       //親がいなければ根っこ
       if (!schema.parent &amp;&amp; maxSchema === undefined)
@@ -1651,7 +1651,7 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat Jan 13 2018 22:17:33 GMT+0900 (東京 (標準時))
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat Jan 20 2018 20:46:12 GMT+0900 (東京 (標準時))
 </div>
 </div>
 <script src="../prettify.js"></script>

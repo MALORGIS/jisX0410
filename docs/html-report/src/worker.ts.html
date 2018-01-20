@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Code coverage report for src\worker.ts</title>
+    <title>Code coverage report for src\Worker.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -16,7 +16,7 @@
 <div class='wrapper'>
   <div class='pad1'>
     <h1>
-      <a href="../index.html">all files</a> / <a href="index.html">src/</a> worker.ts
+      <a href="../index.html">all files</a> / <a href="index.html">src/</a> Worker.ts
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
@@ -411,7 +411,7 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
   }//end interface
 &nbsp;
   /** メッシュ作成用ワーカ */
-  export class meshWorker{
+  export class MeshWorker{
     
     /** ワーカの保持 */
     private _worker:Worker;
@@ -471,19 +471,19 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
     //event.data
     //let message = &lt;jisX0410.IMessage&gt; JSON.parse(event.data);
 <span class="cstat-no" title="statement not covered" >    let message = &lt;jisX0410.IMessage&gt; event.data;</span>
-<span class="cstat-no" title="statement not covered" >    let meshUtil  = new jisX0410.meshUtil();</span>
-<span class="cstat-no" title="statement not covered" >    let schema: jisX0410.meshSchema;</span>
-<span class="cstat-no" title="statement not covered" >    let maxSchema: jisX0410.meshSchema;</span>
+<span class="cstat-no" title="statement not covered" >    let MeshUtil  = new jisX0410.MeshUtil();</span>
+<span class="cstat-no" title="statement not covered" >    let schema: jisX0410.MeshSchema;</span>
+<span class="cstat-no" title="statement not covered" >    let maxSchema: jisX0410.MeshSchema;</span>
 &nbsp;
     //シリアル化のため既定のスキーマ以外は現状受け取り不可
-<span class="cstat-no" title="statement not covered" >    for (let i=0; i&lt;meshUtil.meshSchemes.length; i++){</span>
+<span class="cstat-no" title="statement not covered" >    for (let i=0; i&lt;MeshUtil.meshSchemes.length; i++){</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      if (message.schemaLabel === meshUtil.meshSchemes[i].label){</span>
-<span class="cstat-no" title="statement not covered" >        schema = meshUtil.meshSchemes[i];</span>
+<span class="cstat-no" title="statement not covered" >      if (message.schemaLabel === MeshUtil.meshSchemes[i].label){</span>
+<span class="cstat-no" title="statement not covered" >        schema = MeshUtil.meshSchemes[i];</span>
       }//end if
 <span class="cstat-no" title="statement not covered" >      if (message.maxSchemaLabel &amp;&amp; </span>
-          message.maxSchemaLabel === meshUtil.meshSchemes[i].label){
-<span class="cstat-no" title="statement not covered" >        maxSchema = meshUtil.meshSchemes[i];</span>
+          message.maxSchemaLabel === MeshUtil.meshSchemes[i].label){
+<span class="cstat-no" title="statement not covered" >        maxSchema = MeshUtil.meshSchemes[i];</span>
       }
 &nbsp;
     }//end loop
@@ -494,21 +494,21 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
 <span class="cstat-no" title="statement not covered" >      switch(message.format)</span>
       {
         case "GeoJSON":
-<span class="cstat-no" title="statement not covered" >          let geofeatures = meshUtil.createGeoJSON(latlon, schema, maxSchema);</span>
-<span class="cstat-no" title="statement not covered" >          let geobuffer = meshUtil.geoJsonToStringBuffer(geofeatures);</span>
+<span class="cstat-no" title="statement not covered" >          let geofeatures = MeshUtil.createGeoJSON(latlon, schema, maxSchema);</span>
+<span class="cstat-no" title="statement not covered" >          let geobuffer = MeshUtil.geoJsonToStringBuffer(geofeatures);</span>
           (&lt;any&gt;<span class="cstat-no" title="statement not covered" >message).features = geobuffer</span>
 <span class="cstat-no" title="statement not covered" >          postMessage( message, [geobuffer] );</span>
           //postMessage( JSON.stringify(message) );
 <span class="cstat-no" title="statement not covered" >        break;</span>
         case "esriJSON":
-<span class="cstat-no" title="statement not covered" >          let esrifeatures = meshUtil.createEsriJSON(latlon,schema, maxSchema);</span>
-<span class="cstat-no" title="statement not covered" >          let esribuffer = meshUtil.esriJsonToStringBuffer(esrifeatures);</span>
+<span class="cstat-no" title="statement not covered" >          let esrifeatures = MeshUtil.createEsriJSON(latlon,schema, maxSchema);</span>
+<span class="cstat-no" title="statement not covered" >          let esribuffer = MeshUtil.esriJsonToStringBuffer(esrifeatures);</span>
           (&lt;any&gt;<span class="cstat-no" title="statement not covered" >message).features = esribuffer</span>
 <span class="cstat-no" title="statement not covered" >          postMessage( message, [esribuffer] );</span>
           //postMessage( JSON.stringify(message) );
 <span class="cstat-no" title="statement not covered" >        break;</span>
         case "shapefile":
-<span class="cstat-no" title="statement not covered" >          let shp = meshUtil.createShp(latlon, schema, maxSchema);</span>
+<span class="cstat-no" title="statement not covered" >          let shp = MeshUtil.createShp(latlon, schema, maxSchema);</span>
           (&lt;any&gt;<span class="cstat-no" title="statement not covered" >message).prj = shp.prj;</span>
           (&lt;any&gt;<span class="cstat-no" title="statement not covered" >message).shp = shp.shp;</span>
           (&lt;any&gt;<span class="cstat-no" title="statement not covered" >message).shx = shp.shx;</span>
@@ -522,21 +522,21 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
 <span class="cstat-no" title="statement not covered" >      switch(message.format)</span>
       {
         case "GeoJSON":
-<span class="cstat-no" title="statement not covered" >          let geofeatures = meshUtil.createGeoJsonFromExtent(extent, schema);</span>
-<span class="cstat-no" title="statement not covered" >          let geobuffer = meshUtil.geoJsonToStringBuffer(geofeatures);</span>
+<span class="cstat-no" title="statement not covered" >          let geofeatures = MeshUtil.createGeoJsonFromExtent(extent, schema);</span>
+<span class="cstat-no" title="statement not covered" >          let geobuffer = MeshUtil.geoJsonToStringBuffer(geofeatures);</span>
           (&lt;any&gt;<span class="cstat-no" title="statement not covered" >message).features = geobuffer;</span>
 <span class="cstat-no" title="statement not covered" >          postMessage( message, [geobuffer]);</span>
           //postMessage( JSON.stringify(message) );
 <span class="cstat-no" title="statement not covered" >        break;</span>
         case "esriJSON":
-<span class="cstat-no" title="statement not covered" >          let esrifeatures = meshUtil.createEsriJsonFromExtent(extent, schema);</span>
-<span class="cstat-no" title="statement not covered" >          let esribuffer = meshUtil.esriJsonToStringBuffer(esrifeatures);</span>
+<span class="cstat-no" title="statement not covered" >          let esrifeatures = MeshUtil.createEsriJsonFromExtent(extent, schema);</span>
+<span class="cstat-no" title="statement not covered" >          let esribuffer = MeshUtil.esriJsonToStringBuffer(esrifeatures);</span>
           (&lt;any&gt;<span class="cstat-no" title="statement not covered" >message).features = esribuffer;</span>
 <span class="cstat-no" title="statement not covered" >          postMessage( message, [esribuffer]);</span>
           //postMessage( JSON.stringify(message) );
 <span class="cstat-no" title="statement not covered" >        break;</span>
         case "shapefile":
-<span class="cstat-no" title="statement not covered" >          let shp = meshUtil.createShpFromExtent(extent, schema);</span>
+<span class="cstat-no" title="statement not covered" >          let shp = MeshUtil.createShpFromExtent(extent, schema);</span>
           (&lt;any&gt;<span class="cstat-no" title="statement not covered" >message).prj = shp.prj;</span>
           (&lt;any&gt;<span class="cstat-no" title="statement not covered" >message).shp = shp.shp;</span>
           (&lt;any&gt;<span class="cstat-no" title="statement not covered" >message).shx = shp.shx;</span>
@@ -556,7 +556,7 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat Jan 13 2018 22:17:33 GMT+0900 (東京 (標準時))
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat Jan 20 2018 20:46:12 GMT+0900 (東京 (標準時))
 </div>
 </div>
 <script src="../prettify.js"></script>

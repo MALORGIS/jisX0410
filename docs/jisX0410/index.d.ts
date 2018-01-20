@@ -9,7 +9,7 @@ declare namespace jisX0410 {
         lon: number;
     }
     /** メッシュ定義の管理クラス */
-    class meshSchema {
+    class MeshSchema {
         /** 緯度差 */
         widthDD: number;
         /** 経度差 */
@@ -17,7 +17,7 @@ declare namespace jisX0410 {
         /** 分割数 */
         splitCount: number;
         /** 親メッシュ定義 */
-        parent: meshSchema;
+        parent: MeshSchema;
         /** 説明用のラベル */
         label: string;
         /** メッシュコードの分割文字列 */
@@ -33,11 +33,11 @@ declare namespace jisX0410 {
          * @param parent  親メッシュ定義
          * @param splitCount 分割数
          */
-        constructor(parent?: meshSchema, splitCount?: number);
+        constructor(parent?: MeshSchema, splitCount?: number);
         /**
          * 標準的なメッシュ定義の返却
          */
-        static createStandardMesh(): Array<meshSchema>;
+        static createStandardMesh(): Array<MeshSchema>;
         /**
          * メッシュコード取得用の標準処理定義
          * @param thisObj メッシュスキーマ
@@ -72,9 +72,9 @@ declare namespace jisX0410 {
     /**
      * メッシュ管理クラス
      */
-    class meshUtil {
+    class MeshUtil {
         /** メッシュ情報定義 */
-        meshSchemes: Array<meshSchema>;
+        meshSchemes: Array<MeshSchema>;
         /** 分割数 */
         private _divCount;
         /** コンストラクタ */
@@ -84,35 +84,35 @@ declare namespace jisX0410 {
          * @param extent
          * @param schema
          */
-        calcMeshCountFromExtent(extent: IExtent, schema: meshSchema): number;
+        calcMeshCountFromExtent(extent: IExtent, schema: MeshSchema): number;
         /**
          * ４隅座標分 指定メッシュの作成
          * @param extent 4隅座標(矩形)
          * @param schema メッシュ構造
          * @returns GeoJsonFeature Array
          */
-        createGeoJsonFromExtent(extent: IExtent, schema: meshSchema): Array<IGeoJsonFeature>;
+        createGeoJsonFromExtent(extent: IExtent, schema: MeshSchema): Array<IGeoJsonFeature>;
         /**
          * ４隅座標分 指定メッシュの作成
          * @param extent 4隅座標(矩形)
          * @param schema メッシュ構造
          * @returns GeoJsonFeature Array
          */
-        createEsriJsonFromExtent(extent: IExtent, schema: meshSchema): Array<IEsriJsonFeature>;
+        createEsriJsonFromExtent(extent: IExtent, schema: MeshSchema): Array<IEsriJsonFeature>;
         /**
          * ４隅座標分 指定メッシュの作成
          * @param extent 4隅座標(矩形)
          * @param schema メッシュ構造
          * @returns GeoJsonFeature Array
          */
-        createShpFromExtent(extent: IExtent, schema: meshSchema, shpOpt?: IShpCreateOption): shpFile;
+        createShpFromExtent(extent: IExtent, schema: MeshSchema, shpOpt?: IShpCreateOption): ShpFile;
         /**
          * メッシュ件数の計算
          * @param schema 作成するメッシュ構造
          * @param maxSchema 上位メッシュ構造
          * @returns 件数
          */
-        calcMeshCount(schema: meshSchema, maxSchema?: meshSchema): number;
+        calcMeshCount(schema: MeshSchema, maxSchema?: MeshSchema): number;
         /**
          * GeoJSON Feature配列の返却
          * @param latlon 作成地点(緯度経度)
@@ -120,7 +120,7 @@ declare namespace jisX0410 {
          * @param maxSchema 作成上限メッシュ構造(省略可)
          * @returns GeoJSON Feature配列
          */
-        createGeoJSON(latlon: [number, number], schema: meshSchema, maxSchema?: meshSchema): Array<IGeoJsonFeature>;
+        createGeoJSON(latlon: [number, number], schema: MeshSchema, maxSchema?: MeshSchema): Array<IGeoJsonFeature>;
         /**
          * ESRI JSON定義の返却
          * @param latlon 作成地点(緯度経度)
@@ -128,7 +128,7 @@ declare namespace jisX0410 {
          * @param maxSchema 作成上限メッシュ構造(省略可)
          * @returns ESRI JSON定義 配列
          */
-        createEsriJSON(latlon: [number, number], schema: meshSchema, maxSchema?: meshSchema): Array<IEsriJsonFeature>;
+        createEsriJSON(latlon: [number, number], schema: MeshSchema, maxSchema?: MeshSchema): Array<IEsriJsonFeature>;
         /**
          * shapefileの作成
          * @param latlon 作成地点(緯度経度)
@@ -137,7 +137,7 @@ declare namespace jisX0410 {
          * @param shpOpt 作成オプション
          * @returns shapefile
          */
-        createShp(latlon: [number, number], schema: meshSchema, maxSchema?: meshSchema, shpOpt?: IShpCreateOption): shpFile;
+        createShp(latlon: [number, number], schema: MeshSchema, maxSchema?: MeshSchema, shpOpt?: IShpCreateOption): ShpFile;
         /**
          * GeoJSONフィーチャ配列を文字列バイナリ化
          * @param features GeoJSON Feature Array
@@ -155,7 +155,7 @@ declare namespace jisX0410 {
          * 10分の1 細分区画(約100m四方)と20分の1 細分区画(約50m四方)のメッシュコードはコード体系不明のため入力しないでください。
          * @param meshCode メッシュコード文字列
          */
-        meshCode2Schema(meshCode: string): meshSchema;
+        meshCode2Schema(meshCode: string): MeshSchema;
         /**
          * GeoJSONないしesriJSONのフィーチャ配列を文字列バイナリ化
          * @param features フィーチャ配列
@@ -226,7 +226,7 @@ declare namespace jisX0410 {
         meshCode: string;
     }
     /** メッシュ用 shapefile作成クラス */
-    class shpFile {
+    class ShpFile {
         /**
          * shapefile生成前のサイズ計算
          * @param meshCount メッシュ件数
@@ -287,7 +287,7 @@ declare namespace jisX0410 {
         prj: string;
     }
     /** メッシュ作成用ワーカ */
-    class meshWorker {
+    class MeshWorker {
         /** ワーカの保持 */
         private _worker;
         /** コールバック処理の辞書 */
