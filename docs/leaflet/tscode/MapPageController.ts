@@ -9,9 +9,9 @@ namespace samples {
     /** angular scope */
     private _scope: angular.IScope;
     /** メッシュ作成用 WebWorker */
-    private _worker:jisX0410.meshWorker;
+    private _worker:jisX0410.MeshWorker;
     /** メッシュ作成用ユーティリティクラス */
-    private _meshUtil: jisX0410.meshUtil;
+    private _meshUtil: jisX0410.MeshUtil;
 
     /** Leaflet Mapコントローラ */
     private _map:L.Map;
@@ -35,13 +35,13 @@ namespace samples {
     public operation: "point" | "extent" = "point";
 
     /** 作成するメッシュ構造 */
-    public selectedSchema: jisX0410.meshSchema;
+    public selectedSchema: jisX0410.MeshSchema;
     /** 作成可能なメッシュ構造一覧 */
-    public schemaList: Array<jisX0410.meshSchema>;
+    public schemaList: Array<jisX0410.MeshSchema>;
     /** 制限とするメッシュ構造 */
-    public selectedMaxSchema:jisX0410.meshSchema;
+    public selectedMaxSchema:jisX0410.MeshSchema;
     /** 制限とするメッシュ構造一覧 (作成するメッシュ構造の親) */
-    public maxSchemaList: Array<jisX0410.meshSchema> = [];
+    public maxSchemaList: Array<jisX0410.MeshSchema> = [];
 
     /** メッシュコード値の入力用 */
     public meshCodeText: string;
@@ -60,10 +60,10 @@ namespace samples {
     constructor($scope: angular.IScope) {
       this._scope = $scope;
 
-      let worker = new jisX0410.meshWorker('./jisX0410/index.js');
+      let worker = new jisX0410.MeshWorker('./jisX0410/index.js');
       this._worker = worker;
 
-      this._meshUtil = new jisX0410.meshUtil();
+      this._meshUtil = new jisX0410.MeshUtil();
       this.schemaList = this._meshUtil.meshSchemes;
       this.selectedSchema = this._meshUtil.meshSchemes[4];
       //設定スキーマの親をセット
@@ -460,7 +460,7 @@ namespace samples {
      * 親スキーマの登録
      * @param schema セットする親スキーマ
      */
-    private _setMaxSchema(schema:jisX0410.meshSchema): void{
+    private _setMaxSchema(schema:jisX0410.MeshSchema): void{
       if (schema)
         this.maxSchemaList.push(schema);
       //あれば再帰呼び出し

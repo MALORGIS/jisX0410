@@ -1,4 +1,4 @@
-/// <reference path="meshSchema.ts" />import { json } from "../node_modules/@types/body-parser/index";
+/// <reference path="MeshSchema.ts" />import { json } from "../node_modules/@types/body-parser/index";
 
 
 
@@ -38,10 +38,10 @@ namespace jisX0410
   /**
    * メッシュ管理クラス
    */
-  export class meshUtil
+  export class MeshUtil
   {
     /** メッシュ情報定義 */
-    public meshSchemes: Array<meshSchema> = meshSchema.createStandardMesh();
+    public meshSchemes: Array<MeshSchema> = MeshSchema.createStandardMesh();
 
     /** 分割数 */
     private _divCount: number;
@@ -56,7 +56,7 @@ namespace jisX0410
      * @param extent 
      * @param schema 
      */
-    public calcMeshCountFromExtent(extent:IExtent, schema:meshSchema)
+    public calcMeshCountFromExtent(extent:IExtent, schema:MeshSchema)
       : number {
       //左下隅のメッシュを取得して左下隅座標を書き換え
       let leftLower = this._getMeshInfoFromBl([extent.ymin,extent.xmin], schema);
@@ -77,7 +77,7 @@ namespace jisX0410
      * @param schema メッシュ構造
      * @returns GeoJsonFeature Array
      */
-    public createGeoJsonFromExtent(extent:IExtent, schema:meshSchema)
+    public createGeoJsonFromExtent(extent:IExtent, schema:MeshSchema)
       : Array<IGeoJsonFeature> {
       
       //左下隅のメッシュを取得して左下隅座標を書き換え
@@ -117,7 +117,7 @@ namespace jisX0410
      * @param schema メッシュ構造
      * @returns GeoJsonFeature Array
      */
-    public createEsriJsonFromExtent(extent:IExtent, schema:meshSchema)
+    public createEsriJsonFromExtent(extent:IExtent, schema:MeshSchema)
       : Array<IEsriJsonFeature> {
       
       //左下隅のメッシュを取得して左下隅座標を書き換え
@@ -156,8 +156,8 @@ namespace jisX0410
      * @param schema メッシュ構造
      * @returns GeoJsonFeature Array
      */
-    public createShpFromExtent(extent:IExtent, schema:meshSchema,shpOpt:IShpCreateOption = undefined)
-    : shpFile {
+    public createShpFromExtent(extent:IExtent, schema:MeshSchema,shpOpt:IShpCreateOption = undefined)
+    : ShpFile {
       
       //左下隅のメッシュを取得して左下隅座標を書き換え
       let leftLower = this._getMeshInfoFromBl([extent.ymin,extent.xmin], schema);
@@ -190,7 +190,7 @@ namespace jisX0410
       }//end loop index
       
       //SHPの返却
-      return new shpFile(results, shpOpt);
+      return new ShpFile(results, shpOpt);
     }//end method
     
 
@@ -200,8 +200,8 @@ namespace jisX0410
      * @param maxSchema 上位メッシュ構造
      * @returns 件数
      */
-    public calcMeshCount(schema: meshSchema,
-                         maxSchema:meshSchema = undefined): number{
+    public calcMeshCount(schema: MeshSchema,
+                         maxSchema:MeshSchema = undefined): number{
       //分割数をリセット
       this._divCount = 1;
       let roots = this._getRootsMeshSchema(schema, maxSchema);
@@ -217,8 +217,8 @@ namespace jisX0410
      * @returns GeoJSON Feature配列
      */
     public createGeoJSON(latlon:[number, number],
-                         schema:meshSchema,
-                         maxSchema:meshSchema = undefined)
+                         schema:MeshSchema,
+                         maxSchema:MeshSchema = undefined)
       : Array<IGeoJsonFeature>
     {
       //分割数をリセット
@@ -250,8 +250,8 @@ namespace jisX0410
      * @returns ESRI JSON定義 配列
      */
     public createEsriJSON(latlon:[number, number], 
-                          schema:meshSchema,
-                          maxSchema:meshSchema = undefined) 
+                          schema:MeshSchema,
+                          maxSchema:MeshSchema = undefined) 
       : Array<IEsriJsonFeature>
     {
       //分割数をリセット
@@ -285,10 +285,10 @@ namespace jisX0410
      * @returns shapefile
      */
     public createShp(latlon:[number, number], 
-                     schema:meshSchema, 
-                     maxSchema:meshSchema = undefined,
+                     schema:MeshSchema, 
+                     maxSchema:MeshSchema = undefined,
                      shpOpt:IShpCreateOption = undefined) 
-      :shpFile
+      :ShpFile
     {
       //分割数をリセット
       this._divCount = 1;
@@ -311,7 +311,7 @@ namespace jisX0410
       };
 
       //SHPの返却
-      return new shpFile(features, shpOpt);
+      return new ShpFile(features, shpOpt);
     }//end method
 
     /**
@@ -343,7 +343,7 @@ namespace jisX0410
      * 10分の1 細分区画(約100m四方)と20分の1 細分区画(約50m四方)のメッシュコードはコード体系不明のため入力しないでください。
      * @param meshCode メッシュコード文字列
      */
-    public meshCode2Schema(meshCode:string): meshSchema {
+    public meshCode2Schema(meshCode:string): MeshSchema {
 /*
 1次: 4桁
 2次: 6桁
@@ -436,7 +436,7 @@ namespace jisX0410
      * @returns メッシュ情報
      */
     private _getMeshInfo(
-      schema:meshSchema, 
+      schema:MeshSchema, 
       rootsInfo:IMeshInfo,
       index:number,
       divCount:number): IMesh
@@ -457,7 +457,7 @@ namespace jisX0410
      * @param schema メッシュ構造
      * @returns メッシュ情報
      */
-    private _getMeshInfoFromBl(latlon:[number,number], schema:meshSchema): IMesh {
+    private _getMeshInfoFromBl(latlon:[number,number], schema:MeshSchema): IMesh {
       //メッシュコード取得
       var meshInfo = schema.getMeshCode(latlon);
       
@@ -481,7 +481,7 @@ namespace jisX0410
      * @param maxSchema 親がこれならここまでとなる定義
      * @returns 指定した親スキーマ (無指定時は1次メッシュ)
      */
-    private _getRootsMeshSchema(schema:meshSchema, maxSchema:meshSchema): meshSchema
+    private _getRootsMeshSchema(schema:MeshSchema, maxSchema:MeshSchema): MeshSchema
     {
       //親がいなければ根っこ
       if (!schema.parent && maxSchema === undefined)

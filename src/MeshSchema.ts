@@ -12,7 +12,7 @@ namespace jisX0410
   }//end class
 
   /** メッシュ定義の管理クラス */
-  export class meshSchema
+  export class MeshSchema
   {
     /** 緯度差 */
     public widthDD: number;
@@ -21,7 +21,7 @@ namespace jisX0410
     /** 分割数 */
     public splitCount: number;
     /** 親メッシュ定義 */
-    public parent: meshSchema;
+    public parent: MeshSchema;
     /** 説明用のラベル */
     public label: string;
     /** メッシュコードの分割文字列 */
@@ -41,7 +41,7 @@ namespace jisX0410
      * @param parent  親メッシュ定義
      * @param splitCount 分割数
      */
-    public constructor(parent: meshSchema = undefined, splitCount:number = undefined)
+    public constructor(parent: MeshSchema = undefined, splitCount:number = undefined)
     {
       this.parent = parent;
       this.splitCount = splitCount;
@@ -55,7 +55,7 @@ namespace jisX0410
     /**
      * 標準的なメッシュ定義の返却
      */
-    public static createStandardMesh() : Array<meshSchema> {
+    public static createStandardMesh() : Array<MeshSchema> {
 
       //1次メッシュコード生成用のコード
       let mesh1_getCode: (latlon:[number,number]) => IMeshInfo  = 
@@ -72,19 +72,19 @@ namespace jisX0410
       //2-3次メッシュコード生成用のコード
       let mesh2_3_getCode :(latlon:[number,number]) => IMeshInfo =
       function(latlon: [number, number]): IMeshInfo{
-        let thisObj = (<meshSchema>this);
+        let thisObj = (<MeshSchema>this);
 
-        return meshSchema._getCodeBase(thisObj, latlon, function(preMeshInfo:IMeshInfo, r:number,c:number){
-          let thisObj = (<meshSchema>this);
+        return MeshSchema._getCodeBase(thisObj, latlon, function(preMeshInfo:IMeshInfo, r:number,c:number){
+          let thisObj = (<MeshSchema>this);
           return preMeshInfo.meshCode + thisObj.splitString + String(r) + String(c);
         });
       };
       //4-6次メッシュコードと5倍地域メッシュの生成用コード
       let mesh4_6_getCode :(latlon:[number, number]) => IMeshInfo =
       function(latlon: [number, number]): IMeshInfo{
-        let thisObj = (<meshSchema>this);
-        return meshSchema._getCodeBase(thisObj, latlon, function(preMeshInfo:IMeshInfo, r:number,c:number){
-          let thisObj = (<meshSchema>this);
+        let thisObj = (<MeshSchema>this);
+        return MeshSchema._getCodeBase(thisObj, latlon, function(preMeshInfo:IMeshInfo, r:number,c:number){
+          let thisObj = (<MeshSchema>this);
           let code = r < 1 ? String(c + 1) : String(c + 1 + 2);
           code = preMeshInfo.meshCode + thisObj.splitString + code;
           return code;
@@ -93,9 +93,9 @@ namespace jisX0410
       //2倍地域メッシュの生成コード
       let mesh3_2_getCode:(latlon:[number, number]) => IMeshInfo =
       function(latlon: [number, number]): IMeshInfo{
-        let thisObj = (<meshSchema>this);
-        return meshSchema._getCodeBase(thisObj, latlon, function(preMeshInfo:IMeshInfo, r:number,c:number){
-          let thisObj = (<meshSchema>this);
+        let thisObj = (<MeshSchema>this);
+        return MeshSchema._getCodeBase(thisObj, latlon, function(preMeshInfo:IMeshInfo, r:number,c:number){
+          let thisObj = (<MeshSchema>this);
           const MESH_ID = ["0","2","4","6","8"];
           let code = MESH_ID[r] + MESH_ID[c] + '5';
           code = preMeshInfo.meshCode + thisObj.splitString + code;
@@ -105,9 +105,9 @@ namespace jisX0410
       //10分の1・20分の1細分区画のメッシュコード生成コード ( 明確な規定がなさそうので適当にRCを文字化 )
       let mesh7_8_getCode:(latlon:[number, number]) => IMeshInfo =
       function(latlon: [number, number]): IMeshInfo{
-        let thisObj = (<meshSchema>this);
-        return meshSchema._getCodeBase(thisObj, latlon, function(preMeshInfo:IMeshInfo, r:number,c:number){
-          let thisObj = (<meshSchema>this);
+        let thisObj = (<MeshSchema>this);
+        return MeshSchema._getCodeBase(thisObj, latlon, function(preMeshInfo:IMeshInfo, r:number,c:number){
+          let thisObj = (<MeshSchema>this);
           //文字列化して0埋め
           let code = ('00' + String(r)).slice(-2) + thisObj.splitString + ('00' + String(c)).slice(-2);
           code = preMeshInfo.meshCode + thisObj.splitString + code;
@@ -134,7 +134,7 @@ namespace jisX0410
       let mesh2_3cd2mesh: (meshCode:string) => IMeshInfo =
       function(meshCode: string): IMeshInfo {
         
-        let thisObj = <meshSchema>this;
+        let thisObj = <MeshSchema>this;
         //区切り文字を可能な限り排除
         meshCode = meshCode.replace(/[-_.\s]/g, "");
         if (meshCode.length !== thisObj.meshCodeLength)
@@ -154,7 +154,7 @@ namespace jisX0410
       //4次から6次(と5倍)メッシュコードからメッシュ情報
       let mesh4_6cd2mesh: (meshCode:string) => IMeshInfo =
       function(meshCode: string): IMeshInfo {
-        let thisObj = <meshSchema>this;
+        let thisObj = <MeshSchema>this;
         //区切り文字を可能な限り排除
         meshCode = meshCode.replace(/[-_.\s]/g, "");
         if (meshCode.length !== thisObj.meshCodeLength)
@@ -186,7 +186,7 @@ namespace jisX0410
       //2倍地域メッシュ
       let mesh3_2cd2mesh: (meshCode:string) => IMeshInfo =
       function(meshCode: string): IMeshInfo {
-        let thisObj = <meshSchema>this;
+        let thisObj = <MeshSchema>this;
         //区切り文字を可能な限り排除
         meshCode = meshCode.replace(/[-_.\s]/g, "");
         if (meshCode.length !== thisObj.meshCodeLength)
@@ -212,7 +212,7 @@ namespace jisX0410
 
 
 
-      let mesh1 = new meshSchema();
+      let mesh1 = new MeshSchema();
       mesh1.label = "第1次地域区画(約80km四方)";
       mesh1.widthDD = 1;
       mesh1.heightDD = 2 / 3;
@@ -220,61 +220,61 @@ namespace jisX0410
       mesh1.getMeshCode = mesh1_getCode.bind(mesh1);
       mesh1.meshCode2MeshInfo = mesh1cd2mesh.bind(mesh1);
 
-      let mesh2 = new meshSchema(mesh1, 8);
+      let mesh2 = new MeshSchema(mesh1, 8);
       mesh2.label = "第2次地域区画(約10km四方)";
       mesh2.splitString = "-";
       mesh2.meshCodeLength = 6;
       mesh2.getMeshCode = mesh2_3_getCode.bind(mesh2);
       mesh2.meshCode2MeshInfo = mesh2_3cd2mesh.bind(mesh2);
 
-      let mesh3_5 = new meshSchema(mesh2, 2);
+      let mesh3_5 = new MeshSchema(mesh2, 2);
       mesh3_5.label = "5倍地域メッシュ(約5km四方)";
       mesh3_5.splitString = "-";
       mesh3_5.meshCodeLength = 7;
       mesh3_5.getMeshCode = mesh4_6_getCode.bind(mesh3_5);
       mesh3_5.meshCode2MeshInfo = mesh4_6cd2mesh.bind(mesh3_5);
 
-      let mesh3_2 = new meshSchema(mesh2, 5);
+      let mesh3_2 = new MeshSchema(mesh2, 5);
       mesh3_2.label = "2倍地域メッシュ(約2km四方)";
       mesh3_2.splitString = "-";
       mesh3_2.meshCodeLength = 9;
       mesh3_2.getMeshCode = mesh3_2_getCode.bind(mesh3_2);
       mesh3_2.meshCode2MeshInfo = mesh3_2cd2mesh.bind(mesh3_2);
       
-      let mesh3 = new meshSchema(mesh2, 10);
+      let mesh3 = new MeshSchema(mesh2, 10);
       mesh3.label = "基準地域メッシュ(約1km四方)";
       mesh3.splitString = "-";
       mesh3.meshCodeLength = 8;
       mesh3.getMeshCode = mesh2_3_getCode.bind(mesh3);
       mesh3.meshCode2MeshInfo = mesh2_3cd2mesh.bind(mesh3);
 
-      let mesh4 = new meshSchema(mesh3, 2);
+      let mesh4 = new MeshSchema(mesh3, 2);
       mesh4.label = "2分の1地域メッシュ(約500m四方)";
       mesh4.splitString = "-";
       mesh4.meshCodeLength = 9;
       mesh4.getMeshCode = mesh4_6_getCode.bind(mesh4);
       mesh4.meshCode2MeshInfo = mesh4_6cd2mesh.bind(mesh4);
 
-      let mesh5 = new meshSchema(mesh4, 2);
+      let mesh5 = new MeshSchema(mesh4, 2);
       mesh5.label = "4分の1地域メッシュ(約250m四方)";
       mesh5.splitString = "-";
       mesh5.meshCodeLength = 10;
       mesh5.getMeshCode = mesh4_6_getCode.bind(mesh5);
       mesh5.meshCode2MeshInfo = mesh4_6cd2mesh.bind(mesh5);
 
-      let mesh6 = new meshSchema(mesh5, 2);
+      let mesh6 = new MeshSchema(mesh5, 2);
       mesh6.label = "8分の1地域メッシュ(約125m四方)";
       mesh6.splitString = "-";
       mesh6.meshCodeLength = 11;
       mesh6.getMeshCode = mesh4_6_getCode.bind(mesh6);
       mesh6.meshCode2MeshInfo = mesh4_6cd2mesh.bind(mesh6);
 
-      let mesh7 = new meshSchema(mesh3, 10);
+      let mesh7 = new MeshSchema(mesh3, 10);
       mesh7.label = "10分の1 細分区画(約100m四方)";
       mesh7.splitString = "_";
       mesh7.getMeshCode = mesh7_8_getCode.bind(mesh7);
 
-      let mesh8 = new meshSchema(mesh3, 20);
+      let mesh8 = new MeshSchema(mesh3, 20);
       mesh8.label = "20分の1 細分区画(約50m四方)";
       mesh8.splitString = "_";
       mesh8.getMeshCode = mesh7_8_getCode.bind(mesh8);
@@ -295,7 +295,7 @@ namespace jisX0410
      * @param getCoords メッシュコード取得処理
      * @returns メッシュ情報
      */
-    private static _getCodeBase(thisObj:meshSchema , latlon:[number,number] ,getCoords: (preMeshInfo:IMeshInfo, r:number, c:number)=> string): IMeshInfo {
+    private static _getCodeBase(thisObj:MeshSchema , latlon:[number,number] ,getCoords: (preMeshInfo:IMeshInfo, r:number, c:number)=> string): IMeshInfo {
 
       let preMeshInfo = thisObj.parent.getMeshCode(latlon);
 

@@ -12,13 +12,13 @@ namespace samples {
     private _ngTableParams:any;
 
     /** メッシュ作成用 WebWorker */
-    private _worker:jisX0410.meshWorker;
+    private _worker:jisX0410.MeshWorker;
 
     /** メッシュ作成用ユーティリティクラス */
-    private _meshUtil: jisX0410.meshUtil;
+    private _meshUtil: jisX0410.MeshUtil;
 
     /** 件数とメッシュ構造 */
-    private _countSchema: Array<{ count:number,schema:jisX0410.meshSchema }> = [];
+    private _countSchema: Array<{ count:number,schema:jisX0410.MeshSchema }> = [];
 
     /** テーブル表示用レコード */
     private _prc: Array<{count:number, time:string, onetime:string}> = [];
@@ -46,10 +46,10 @@ namespace samples {
       this._scope = $scope;
       this._ngTableParams = NgTableParams;
 
-      let worker = new jisX0410.meshWorker('./jisX0410/index.js');
+      let worker = new jisX0410.MeshWorker('./jisX0410/index.js');
       this._worker = worker;
 
-      this._meshUtil = new jisX0410.meshUtil();
+      this._meshUtil = new jisX0410.MeshUtil();
       
       //処理の実行
       this._setup();

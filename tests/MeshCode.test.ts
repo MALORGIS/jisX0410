@@ -27,7 +27,7 @@ let codeLabel = {
 };
 
 //コード値からメッシュスキーマを探索
-let mcd2schema = function(mcd: string, lst: Array<jisX0410.meshSchema>): jisX0410.meshSchema {
+let mcd2schema = function(mcd: string, lst: Array<jisX0410.MeshSchema>): jisX0410.MeshSchema {
 
   for (let i=0; i<lst.length; i++){
     let sc = lst[i];
@@ -95,7 +95,7 @@ describe('meshUtilTest', () => {
     it('メッシュコード一致のテスト', () => {
 
       //メッシュコード管理クラスを初期化
-      let meshUtil = new jisX0410.meshUtil();
+      let MeshUtil = new jisX0410.MeshUtil();
       
       var lineCount = 0;
       //テスト用CSVを一行ずつ回す
@@ -124,9 +124,9 @@ describe('meshUtilTest', () => {
         dx = minLon + (maxLon - minLon) /2;
         dy = minLat + (maxLat - minLat) /2;
 
-        let sc = mcd2schema(mcd, meshUtil.meshSchemes);
+        let sc = mcd2schema(mcd, MeshUtil.meshSchemes);
 
-        let geoJ = meshUtil.createGeoJSON([dy, dx], sc, sc);
+        let geoJ = MeshUtil.createGeoJSON([dy, dx], sc, sc);
         assert.equal(geoJ.length, 1);
         
         //細分区画は、メッシュコードの規定が不明のため飛ばす
@@ -136,7 +136,7 @@ describe('meshUtilTest', () => {
           assert.equal(checkmeshCd ,meshCode);
 
           //メッシュコード文字列から構造取得をテスト
-          let checkSchema = meshUtil.meshCode2Schema(geoJ[0].properties.meshCode);
+          let checkSchema = MeshUtil.meshCode2Schema(geoJ[0].properties.meshCode);
           assert.equal(checkSchema.label, sc.label)
           //メッシュ構造からメッシュ情報取り出し
           let cd2info: jisX0410.IMeshInfo = undefined;
@@ -151,7 +151,7 @@ describe('meshUtilTest', () => {
           dx = cd2info.lon + (checkSchema.widthDD / 2.0);
           dy = cd2info.lat + (checkSchema.heightDD / 2.0);
 
-          let checkGeoJ = meshUtil.createGeoJSON([dy, dx], sc, sc);
+          let checkGeoJ = MeshUtil.createGeoJSON([dy, dx], sc, sc);
           assert.equal(cd2info.meshCode, geoJ[0].properties.meshCode);
           assert.equal(geoJ[0].properties.meshCode, checkGeoJ[0].properties.meshCode);
         }
@@ -183,7 +183,7 @@ describe('meshUtilTest', () => {
         assert( calDist(srcMinXy, dstMinXy) < 0.001, "距離差1mm over");
         assert( calDist(srcMaxXy, dstMaxXy) < 0.001, "距離差1mm over");
 
-        let esriJ = meshUtil.createEsriJSON([dy, dx], sc, mcd==='1'?undefined:sc);
+        let esriJ = MeshUtil.createEsriJSON([dy, dx], sc, mcd==='1'?undefined:sc);
         //同細分区画
         if (mcd !== '7' && mcd !=='8'){
           let checkmeshCd: string = esriJ[0].attributes.meshCode.replace(/-/g,'').replace(/_/g,'');
@@ -204,115 +204,115 @@ describe('meshUtilTest', () => {
 
     it("メッシュ件数とshpfileサイズの一致確認",() => {
       //メッシュコード管理クラスを初期化
-      let meshUtil = new jisX0410.meshUtil();
+      let MeshUtil = new jisX0410.MeshUtil();
 
-      let mesh1schema = meshUtil.meshSchemes[0];
-      let mesh2schema = meshUtil.meshSchemes[1];
-      let mesh35schema = meshUtil.meshSchemes[2];
-      let mesh32schema = meshUtil.meshSchemes[3];
-      let mesh3schema = meshUtil.meshSchemes[4];
-      let mesh4schema = meshUtil.meshSchemes[5];
-      let mesh5schema = meshUtil.meshSchemes[6];
-      let mesh6schema = meshUtil.meshSchemes[7];
-      let mesh7schema = meshUtil.meshSchemes[8];
-      let mesh8schema = meshUtil.meshSchemes[9];
+      let mesh1schema = MeshUtil.meshSchemes[0];
+      let mesh2schema = MeshUtil.meshSchemes[1];
+      let mesh35schema = MeshUtil.meshSchemes[2];
+      let mesh32schema = MeshUtil.meshSchemes[3];
+      let mesh3schema = MeshUtil.meshSchemes[4];
+      let mesh4schema = MeshUtil.meshSchemes[5];
+      let mesh5schema = MeshUtil.meshSchemes[6];
+      let mesh6schema = MeshUtil.meshSchemes[7];
+      let mesh7schema = MeshUtil.meshSchemes[8];
+      let mesh8schema = MeshUtil.meshSchemes[9];
 
       /* shpesizeとshpの比較 */
-      let assertShpSize = function(shpSize:any, shp:jisX0410.shpFile){
+      let assertShpSize = function(shpSize:any, shp:jisX0410.ShpFile){
         assert.equal( shpSize.shpLength, shp.shp.byteLength );
         assert.equal( shpSize.shxLength, shp.shx.byteLength );
         assert.equal( shpSize.dbfLength, shp.dbf.byteLength );
       };
       let latlon: [number, number] = [36, 136];
       //1次メッシュ (1件の返却)
-      let mesh1 = meshUtil.createGeoJSON(latlon, mesh1schema);
+      let mesh1 = MeshUtil.createGeoJSON(latlon, mesh1schema);
       assert.equal(mesh1.length , 1);
-      assert.equal(meshUtil.calcMeshCount(mesh1schema), 1);
+      assert.equal(MeshUtil.calcMeshCount(mesh1schema), 1);
 
       //1次メッシュ (1件のサイズ計算)
-      let mesh1shpSize = jisX0410.shpFile.calcShpFileBytes(1);
-      let mesh1shp = meshUtil.createShp(latlon, mesh1schema);
+      let mesh1shpSize = jisX0410.ShpFile.calcShpFileBytes(1);
+      let mesh1shp = MeshUtil.createShp(latlon, mesh1schema);
       assertShpSize(mesh1shpSize, mesh1shp);
 
       //2次メッシュ ( 1次メッシュの8分割 )
-      let mesh2 = meshUtil.createGeoJSON(latlon, mesh2schema);
+      let mesh2 = MeshUtil.createGeoJSON(latlon, mesh2schema);
       assert.equal(mesh2.length, 8 * 8);
-      assert.equal( meshUtil.calcMeshCount(mesh2schema), 8 * 8);
+      assert.equal( MeshUtil.calcMeshCount(mesh2schema), 8 * 8);
 
-      let mesh2shpSize = jisX0410.shpFile.calcShpFileBytes(8 * 8);
-      let mesh2shp = meshUtil.createShp(latlon, mesh2schema);
+      let mesh2shpSize = jisX0410.ShpFile.calcShpFileBytes(8 * 8);
+      let mesh2shp = MeshUtil.createShp(latlon, mesh2schema);
       assertShpSize(mesh2shpSize, mesh2shp);
 
       //5倍地域 (2次メッシュの2分割)
-      let mesh3_5 = meshUtil.createGeoJSON(latlon, mesh35schema, mesh2schema);
+      let mesh3_5 = MeshUtil.createGeoJSON(latlon, mesh35schema, mesh2schema);
       assert.equal(mesh3_5.length, 2 * 2);
-      assert.equal( meshUtil.calcMeshCount(mesh35schema, mesh2schema), 2 * 2);
+      assert.equal( MeshUtil.calcMeshCount(mesh35schema, mesh2schema), 2 * 2);
 
-      let mesh35shpSize = jisX0410.shpFile.calcShpFileBytes(2 * 2);
-      let mesh35shp = meshUtil.createShp(latlon, mesh35schema, mesh2schema);
+      let mesh35shpSize = jisX0410.ShpFile.calcShpFileBytes(2 * 2);
+      let mesh35shp = MeshUtil.createShp(latlon, mesh35schema, mesh2schema);
       assertShpSize(mesh35shpSize, mesh35shp);
 
       //2倍地域 (2次メッシュの5分割)
-      let mesh3_2 = meshUtil.createGeoJSON(latlon, mesh32schema, mesh2schema);
+      let mesh3_2 = MeshUtil.createGeoJSON(latlon, mesh32schema, mesh2schema);
       assert.equal(mesh3_2.length, 5 * 5);
-      assert.equal( meshUtil.calcMeshCount(mesh32schema, mesh2schema), 5 * 5);
+      assert.equal( MeshUtil.calcMeshCount(mesh32schema, mesh2schema), 5 * 5);
 
-      let mesh32shpSize = jisX0410.shpFile.calcShpFileBytes(5 * 5);
-      let mesh32shp = meshUtil.createShp(latlon, mesh32schema, mesh2schema);
+      let mesh32shpSize = jisX0410.ShpFile.calcShpFileBytes(5 * 5);
+      let mesh32shp = MeshUtil.createShp(latlon, mesh32schema, mesh2schema);
       assertShpSize(mesh32shpSize, mesh32shp);
 
       //地域メッシュ (2次メッシュの10分割)
-      let mesh3 = meshUtil.createGeoJSON(latlon, mesh3schema, mesh2schema);
+      let mesh3 = MeshUtil.createGeoJSON(latlon, mesh3schema, mesh2schema);
       assert.equal(mesh3.length, 10 * 10);
-      assert.equal( meshUtil.calcMeshCount(mesh3schema, mesh2schema), 10 * 10);
+      assert.equal( MeshUtil.calcMeshCount(mesh3schema, mesh2schema), 10 * 10);
 
-      let mesh3shpSize = jisX0410.shpFile.calcShpFileBytes(10 * 10);
-      let mesh3shp = meshUtil.createShp(latlon, mesh3schema, mesh2schema);
+      let mesh3shpSize = jisX0410.ShpFile.calcShpFileBytes(10 * 10);
+      let mesh3shp = MeshUtil.createShp(latlon, mesh3schema, mesh2schema);
       assertShpSize(mesh3shpSize, mesh3shp);
 
       //4次 3次の2分割
-      let mesh4 = meshUtil.createGeoJSON(latlon, mesh4schema, mesh3schema);
+      let mesh4 = MeshUtil.createGeoJSON(latlon, mesh4schema, mesh3schema);
       assert.equal(mesh4.length, 2 * 2);
-      assert.equal( meshUtil.calcMeshCount(mesh4schema, mesh3schema), 2 * 2);
+      assert.equal( MeshUtil.calcMeshCount(mesh4schema, mesh3schema), 2 * 2);
 
-      let mesh4shpSize = jisX0410.shpFile.calcShpFileBytes(2 * 2);
-      let mesh4shp = meshUtil.createShp(latlon, mesh4schema, mesh3schema);
+      let mesh4shpSize = jisX0410.ShpFile.calcShpFileBytes(2 * 2);
+      let mesh4shp = MeshUtil.createShp(latlon, mesh4schema, mesh3schema);
       assertShpSize(mesh4shpSize, mesh4shp);
 
       //5次 4次の2分割
-      let mesh5 = meshUtil.createGeoJSON(latlon, mesh5schema, mesh4schema);
+      let mesh5 = MeshUtil.createGeoJSON(latlon, mesh5schema, mesh4schema);
       assert.equal(mesh5.length, 2 * 2);
-      assert.equal( meshUtil.calcMeshCount(mesh5schema, mesh4schema), 2 * 2);
+      assert.equal( MeshUtil.calcMeshCount(mesh5schema, mesh4schema), 2 * 2);
 
-      let mesh5shpSize = jisX0410.shpFile.calcShpFileBytes(2 * 2);
-      let mesh5shp = meshUtil.createShp(latlon, mesh5schema, mesh4schema);
+      let mesh5shpSize = jisX0410.ShpFile.calcShpFileBytes(2 * 2);
+      let mesh5shp = MeshUtil.createShp(latlon, mesh5schema, mesh4schema);
       assertShpSize(mesh5shpSize, mesh5shp);
 
       //6次 5次の2分割
-      let mesh6 = meshUtil.createGeoJSON(latlon, mesh6schema, mesh5schema);
+      let mesh6 = MeshUtil.createGeoJSON(latlon, mesh6schema, mesh5schema);
       assert.equal(mesh6.length, 2 * 2);
-      assert.equal( meshUtil.calcMeshCount(mesh6schema, mesh5schema), 2 * 2);
+      assert.equal( MeshUtil.calcMeshCount(mesh6schema, mesh5schema), 2 * 2);
 
-      let mesh6shpSize = jisX0410.shpFile.calcShpFileBytes(2 * 2);
-      let mesh6shp = meshUtil.createShp(latlon, mesh6schema, mesh5schema);
+      let mesh6shpSize = jisX0410.ShpFile.calcShpFileBytes(2 * 2);
+      let mesh6shp = MeshUtil.createShp(latlon, mesh6schema, mesh5schema);
       assertShpSize(mesh6shpSize, mesh6shp);
 
       // 10分の1 = 3次の10分割
-      let mesh7 = meshUtil.createGeoJSON(latlon, mesh7schema, mesh3schema);
+      let mesh7 = MeshUtil.createGeoJSON(latlon, mesh7schema, mesh3schema);
       assert.equal(mesh7.length, 10 * 10);
-      assert.equal( meshUtil.calcMeshCount(mesh7schema, mesh3schema), 10 * 10);
+      assert.equal( MeshUtil.calcMeshCount(mesh7schema, mesh3schema), 10 * 10);
       
-      let mesh7shpSize = jisX0410.shpFile.calcShpFileBytes(10 * 10);
-      let mesh7shp = meshUtil.createShp(latlon, mesh7schema, mesh3schema);
+      let mesh7shpSize = jisX0410.ShpFile.calcShpFileBytes(10 * 10);
+      let mesh7shp = MeshUtil.createShp(latlon, mesh7schema, mesh3schema);
       assertShpSize(mesh7shpSize, mesh7shp);
 
       // 20分の1 = 3次の20分割
-      let mesh8 = meshUtil.createGeoJSON(latlon, mesh8schema, mesh3schema);
+      let mesh8 = MeshUtil.createGeoJSON(latlon, mesh8schema, mesh3schema);
       assert.equal(mesh8.length, 20 * 20);
-      assert.equal( meshUtil.calcMeshCount(mesh8schema, mesh3schema), 20 * 20);
+      assert.equal( MeshUtil.calcMeshCount(mesh8schema, mesh3schema), 20 * 20);
 
-      let mesh8shpSize = jisX0410.shpFile.calcShpFileBytes(20 * 20);
-      let mesh8shp = meshUtil.createShp(latlon, mesh8schema, mesh3schema);
+      let mesh8shpSize = jisX0410.ShpFile.calcShpFileBytes(20 * 20);
+      let mesh8shp = MeshUtil.createShp(latlon, mesh8schema, mesh3schema);
       assertShpSize(mesh8shpSize, mesh8shp);
 
       //一応作成オプションの確認
@@ -322,7 +322,7 @@ describe('meshUtilTest', () => {
         dbf: false,
         prj: false
       };
-      let optMesh = meshUtil.createShp(latlon, mesh3schema, mesh2schema, shpOpt);
+      let optMesh = MeshUtil.createShp(latlon, mesh3schema, mesh2schema, shpOpt);
       assert.equal(optMesh.shp, undefined);
       assert.equal(optMesh.shx, undefined);
       assert.equal(optMesh.dbf, undefined);
@@ -345,18 +345,18 @@ describe('meshUtilTest', () => {
     it("範囲探索確認",() => {
       
       //メッシュコード管理クラスを初期化
-      let meshUtil = new jisX0410.meshUtil();
+      let MeshUtil = new jisX0410.MeshUtil();
 
-      let mesh1schema = meshUtil.meshSchemes[0];
-      let mesh2schema = meshUtil.meshSchemes[1];
-      // let mesh35schema = meshUtil.meshSchemes[2];
-      // let mesh32schema = meshUtil.meshSchemes[3];
-      let mesh3schema = meshUtil.meshSchemes[4];
-      let mesh4schema = meshUtil.meshSchemes[5];
-      let mesh5schema = meshUtil.meshSchemes[6];
-      let mesh6schema = meshUtil.meshSchemes[7];
-      let mesh7schema = meshUtil.meshSchemes[8];
-      let mesh8schema = meshUtil.meshSchemes[9];
+      let mesh1schema = MeshUtil.meshSchemes[0];
+      let mesh2schema = MeshUtil.meshSchemes[1];
+      // let mesh35schema = MeshUtil.meshSchemes[2];
+      // let mesh32schema = MeshUtil.meshSchemes[3];
+      let mesh3schema = MeshUtil.meshSchemes[4];
+      let mesh4schema = MeshUtil.meshSchemes[5];
+      let mesh5schema = MeshUtil.meshSchemes[6];
+      let mesh6schema = MeshUtil.meshSchemes[7];
+      let mesh7schema = MeshUtil.meshSchemes[8];
+      let mesh8schema = MeshUtil.meshSchemes[9];
       //名称とスキーマの辞書
       let nameSchema = {
         "GRID1": mesh1schema,
@@ -408,19 +408,19 @@ describe('meshUtilTest', () => {
 
         //作成
         //try {
-        var geoJ = meshUtil.createGeoJsonFromExtent(ext, schema);
-        var esri = meshUtil.createEsriJsonFromExtent(ext,schema);
+        var geoJ = MeshUtil.createGeoJsonFromExtent(ext, schema);
+        var esri = MeshUtil.createEsriJsonFromExtent(ext,schema);
         
         //計算結果の一致確認
-        let meshCount = meshUtil.calcMeshCountFromExtent(ext,schema);
+        let meshCount = MeshUtil.calcMeshCountFromExtent(ext,schema);
         assert.equal(geoJ.length, meshCount);
         console.log(`メッシュ件数:${meshCount}`);
 
         //500件以下なら文字列化して再度インスタンス化可能か確認
         if (meshCount < 300)
         {
-          let geoJBuffer = meshUtil.geoJsonToStringBuffer(geoJ);
-          let esriBuffer = meshUtil.esriJsonToStringBuffer(esri);
+          let geoJBuffer = MeshUtil.geoJsonToStringBuffer(geoJ);
+          let esriBuffer = MeshUtil.esriJsonToStringBuffer(esri);
 
           // console.log(String.fromCharCode.apply("", new Uint8Array(geoJBuffer)));
           // console.log(String.fromCharCode.apply("", new Uint8Array(esriBuffer)));
@@ -431,8 +431,8 @@ describe('meshUtilTest', () => {
           assert.equal(newEsri.length, esri.length);
         }
         //サイズ一致の確認
-        var shpSize = jisX0410.shpFile.calcShpFileBytes(esri.length);
-        var shp = meshUtil.createShpFromExtent(ext,schema);
+        var shpSize = jisX0410.ShpFile.calcShpFileBytes(esri.length);
+        var shp = MeshUtil.createShpFromExtent(ext,schema);
         assert.equal( shpSize.shpLength, shp.shp.byteLength );
         assert.equal( shpSize.shxLength, shp.shx.byteLength );
         assert.equal( shpSize.dbfLength, shp.dbf.byteLength );

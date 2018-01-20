@@ -32,7 +32,7 @@ namespace jisX0410
   const JGD2K:string = 'GEOGCS["JGD2000",DATUM["D_Japanese Geodetic Datum 2000",SPHEROID["GRS_1980",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.017453292519943295]]';
 
   /** メッシュ用 shapefile作成クラス */
-  export class shpFile
+  export class ShpFile
   {
 
     /**
