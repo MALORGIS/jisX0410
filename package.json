@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "toPrj": "hjson -j package.hjson > package.json",
+    "apiref": "typedoc --out ./docs/apiref ./src/index.d.ts --includeDeclarations",
     "pretest": "cd tests && tsc",
     "test": "call node node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha tests/*.test.js",
     "posttest": "remap-istanbul -i coverage/coverage.json -o docs/html-report -t html",
@@ -31,8 +32,5 @@
     "istanbul": "^0.4.5",
     "mocha": "^4.0.1",
     "power-assert": "^1.4.4"
-  },
-  "dependencies": {
-    "typedoc": "^0.9.0"
   }
 }

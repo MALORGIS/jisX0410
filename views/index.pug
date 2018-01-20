@@ -21,19 +21,25 @@ html(ng-app='App')
       .container
         //------ サブ
         .row
-          .col-md-4
+          .col-md-3
             h2 性能測定
             p
               | 標準的な処理の処理速度を計測します。
             p
               a.btn.btn-secondary(href='./benchmark.html', role='button') 測定へ »
-          .col-md-4
+          .col-md-3
             h2 テスト
             p
               | 単体試験の網羅率を示します。試験内容が妥当かどうかはコードを確認してください。
             p
               a.btn.btn-secondary(href='./html-report/index.html', role='button') コードカバレッジ »
-          .col-md-4
+          .col-md-3
+            h2 API リファレンス
+            p
+              | Typescriptの外部定義情報を示します。
+            P
+              a.btn.btn-secondary(href='./apiref/globals.html', role='button') API リファレンス »
+          .col-md-3
             h2 ソースコード
             p
               | Typescriptで記述されています。
