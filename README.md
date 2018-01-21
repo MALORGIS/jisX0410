@@ -2,6 +2,10 @@
 This is a library that handles lat/long grid data for Japan.
 I write in Japanese because this lib cannot be used outside of Japan.
 
+![動作イメージ](https://user-images.githubusercontent.com/35097962/35183353-e1ca036e-fe27-11e7-90bb-a3b040464a0e.gif "動作イメージ")
+Grid shapefile/geojson can be generated with browser only.
+see: https://malorgis.github.io/jisX0410/
+
 Javascriptで地域メッシュを扱うためのライブラリです。  
 現状は余り膨大な件数を扱う想定はしていません。
 
