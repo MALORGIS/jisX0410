@@ -483,6 +483,9 @@ namespace jisX0410
      */
     private _getRootsMeshSchema(schema:MeshSchema, maxSchema:MeshSchema): MeshSchema
     {
+      if (!maxSchema)
+        maxSchema = undefined;
+        
       //親がいなければ根っこ
       if (!schema.parent && maxSchema === undefined)
         return schema;

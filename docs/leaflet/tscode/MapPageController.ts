@@ -273,7 +273,7 @@ namespace samples {
         format: this.format,
         shape: [center.lat, center.lng],
         schemaLabel : this.selectedSchema.label,
-        maxSchemaLabel: this.selectedMaxSchema.label
+        maxSchemaLabel: this.selectedMaxSchema ? this.selectedMaxSchema.label : undefined
       }, (evt: jisX0410.IJSONResult | jisX0410.IShpResult) =>{
           
         let dt = new Date();
@@ -340,7 +340,7 @@ namespace samples {
         format: this.format,
         shape: createArea,
         schemaLabel : this.selectedSchema.label,
-        maxSchemaLabel: this.selectedMaxSchema.label
+        maxSchemaLabel: this.selectedMaxSchema ? this.selectedMaxSchema.label : undefined
       }, (evt: jisX0410.IJSONResult | jisX0410.IShpResult) =>{
           
         let dt = new Date();
@@ -379,7 +379,7 @@ namespace samples {
      */
     public canMoveMeshCode():boolean {
       let meshCode = this.meshCodeText;
-      if (meshCode.trim().replace(/\s/g,"").length < 1){
+      if (meshCode && meshCode.trim().replace(/\s/g,"").length < 1){
         return false;
       }
       return true;
