@@ -602,6 +602,8 @@ var jisX0410;
          * @returns 指定した親スキーマ (無指定時は1次メッシュ)
          */
         MeshUtil.prototype._getRootsMeshSchema = function (schema, maxSchema) {
+            if (!maxSchema)
+                maxSchema = undefined;
             //親がいなければ根っこ
             if (!schema.parent && maxSchema === undefined)
                 return schema;

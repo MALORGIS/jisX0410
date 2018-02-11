@@ -193,7 +193,7 @@ var samples;
                 format: this.format,
                 shape: [center.lat, center.lng],
                 schemaLabel: this.selectedSchema.label,
-                maxSchemaLabel: this.selectedMaxSchema.label
+                maxSchemaLabel: this.selectedMaxSchema ? this.selectedMaxSchema.label : undefined
             }, function (evt) {
                 var dt = new Date();
                 var year = dt.getFullYear();
@@ -244,7 +244,7 @@ var samples;
                 format: this.format,
                 shape: createArea,
                 schemaLabel: this.selectedSchema.label,
-                maxSchemaLabel: this.selectedMaxSchema.label
+                maxSchemaLabel: this.selectedMaxSchema ? this.selectedMaxSchema.label : undefined
             }, function (evt) {
                 var dt = new Date();
                 var year = dt.getFullYear();
@@ -272,7 +272,7 @@ var samples;
         };
         MapPageController.prototype.canMoveMeshCode = function () {
             var meshCode = this.meshCodeText;
-            if (meshCode.trim().replace(/\s/g, "").length < 1) {
+            if (meshCode && meshCode.trim().replace(/\s/g, "").length < 1) {
                 return false;
             }
             return true;
