@@ -396,8 +396,10 @@ namespace samples {
       if (!sc)
         return;
       let info = sc.meshCode2MeshInfo(meshCode);
-      let lon = info.lon + sc.widthDD / 2.0;
-      let lat = info.lat + sc.heightDD / 2.0;
+      let lon = info.lonMs + sc.widthMs / 2.0;
+      let lat = info.latMs + sc.heightMs / 2.0;
+      lon = lon / jisX0410.MeshSchema.MILLISECOND;
+      lat = lat / jisX0410.MeshSchema.MILLISECOND;
 
       let map = this._map;
       map.setView([lat, lon], map.getZoom());
