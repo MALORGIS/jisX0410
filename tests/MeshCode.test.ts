@@ -136,7 +136,7 @@ describe('meshUtilTest', () => {
           assert.equal(checkmeshCd ,meshCode);
 
           //メッシュコード文字列から構造取得をテスト
-          let checkSchema = MeshUtil.meshCode2Schema(geoJ[0].properties.meshCode);
+          let checkSchema:jisX0410.MeshSchema = MeshUtil.meshCode2Schema(geoJ[0].properties.meshCode);
           assert.equal(checkSchema.label, sc.label)
           //メッシュ構造からメッシュ情報取り出し
           let cd2info: jisX0410.IMeshInfo = undefined;
@@ -148,8 +148,10 @@ describe('meshUtilTest', () => {
             console.log(sc.meshCodeLength);
             throw e;
           }
-          dx = cd2info.lon + (checkSchema.widthDD / 2.0);
-          dy = cd2info.lat + (checkSchema.heightDD / 2.0);
+          dx = cd2info.lonMs + (checkSchema.widthMs / 2.0);
+          dy = cd2info.latMs + (checkSchema.heightMs / 2.0);
+          dx = dx / jisX0410.MeshSchema.MILLISECOND;
+          dy = dy / jisX0410.MeshSchema.MILLISECOND;
 
           let checkGeoJ = MeshUtil.createGeoJSON([dy, dx], sc, sc);
           assert.equal(cd2info.meshCode, geoJ[0].properties.meshCode);
@@ -206,16 +208,16 @@ describe('meshUtilTest', () => {
       //メッシュコード管理クラスを初期化
       let MeshUtil = new jisX0410.MeshUtil();
 
-      let mesh1schema = MeshUtil.meshSchemes[0];
-      let mesh2schema = MeshUtil.meshSchemes[1];
-      let mesh35schema = MeshUtil.meshSchemes[2];
-      let mesh32schema = MeshUtil.meshSchemes[3];
-      let mesh3schema = MeshUtil.meshSchemes[4];
-      let mesh4schema = MeshUtil.meshSchemes[5];
-      let mesh5schema = MeshUtil.meshSchemes[6];
-      let mesh6schema = MeshUtil.meshSchemes[7];
-      let mesh7schema = MeshUtil.meshSchemes[8];
-      let mesh8schema = MeshUtil.meshSchemes[9];
+      let mesh1schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[0];
+      let mesh2schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[1];
+      let mesh35schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[2];
+      let mesh32schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[3];
+      let mesh3schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[4];
+      let mesh4schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[5];
+      let mesh5schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[6];
+      let mesh6schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[7];
+      let mesh7schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[8];
+      let mesh8schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[9];
 
       /* shpesizeとshpの比較 */
       let assertShpSize = function(shpSize:any, shp:jisX0410.ShpFile){
@@ -347,16 +349,16 @@ describe('meshUtilTest', () => {
       //メッシュコード管理クラスを初期化
       let MeshUtil = new jisX0410.MeshUtil();
 
-      let mesh1schema = MeshUtil.meshSchemes[0];
-      let mesh2schema = MeshUtil.meshSchemes[1];
+      let mesh1schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[0];
+      let mesh2schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[1];
       // let mesh35schema = MeshUtil.meshSchemes[2];
       // let mesh32schema = MeshUtil.meshSchemes[3];
-      let mesh3schema = MeshUtil.meshSchemes[4];
-      let mesh4schema = MeshUtil.meshSchemes[5];
-      let mesh5schema = MeshUtil.meshSchemes[6];
-      let mesh6schema = MeshUtil.meshSchemes[7];
-      let mesh7schema = MeshUtil.meshSchemes[8];
-      let mesh8schema = MeshUtil.meshSchemes[9];
+      let mesh3schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[4];
+      let mesh4schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[5];
+      let mesh5schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[6];
+      let mesh6schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[7];
+      let mesh7schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[8];
+      let mesh8schema:jisX0410.MeshSchema = MeshUtil.meshSchemes[9];
       //名称とスキーマの辞書
       let nameSchema = {
         "GRID1": mesh1schema,
