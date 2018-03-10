@@ -13,8 +13,8 @@ var jisX0410;
             this.parent = parent;
             this.splitCount = splitCount;
             if (parent) {
-                this.widthDD = parent.widthDD / splitCount;
-                this.heightDD = parent.heightDD / splitCount;
+                this.widthMs = parent.widthMs / splitCount;
+                this.heightMs = parent.heightMs / splitCount;
             } //end if
         } //end method
         /**
@@ -23,13 +23,13 @@ var jisX0410;
         MeshSchema.createStandardMesh = function () {
             //1次メッシュコード生成用のコード
             var mesh1_getCode = function (latlon) {
-                var r = Math.round(Math.floor(latlon[0] * 15.0 / 10.0));
+                var r = Math.round(Math.floor(latlon[0] * 1.5));
                 var c = Math.round(Math.floor(latlon[1] - 100.0));
                 //メッシュコード
                 var code = String(r) + String(c);
-                var lat = r / 15.0 * 10.0;
-                var lon = c + 100.0;
-                return { meshCode: code, lat: lat, lon: lon };
+                var lat = (r * MeshSchema.MILLISECOND) / 1.5; //ミリ秒単位
+                var lon = (c + 100.0) * 3600000; //ミリ秒単位
+                return { meshCode: code, latMs: lat, lonMs: lon };
             };
             //2-3次メッシュコード生成用のコード
             var mesh2_3_getCode = function (latlon) {
@@ -79,9 +79,9 @@ var jisX0410;
                     throw Error("Invalid mesh code.");
                 var r = parseInt(meshCode.slice(0, 2));
                 var c = parseInt(meshCode.slice(2, 4));
-                var lat = r / 15.0 * 10.0;
-                var lon = c + 100.0;
-                return { meshCode: meshCode, lat: lat, lon: lon };
+                var lat = (r * MeshSchema.MILLISECOND) / 1.5;
+                var lon = (c + 100.0) * MeshSchema.MILLISECOND;
+                return { meshCode: meshCode, latMs: lat, lonMs: lon };
             };
             //2次 3次メッシュコードからメッシュ情報
             var mesh2_3cd2mesh = function (meshCode) {
@@ -95,8 +95,8 @@ var jisX0410;
                 var c = parseInt(meshCode.slice(meshCode.length - 1, meshCode.length));
                 return {
                     meshCode: preInfo.meshCode + thisObj.splitString + String(r) + String(c),
-                    lat: preInfo.lat + (thisObj.heightDD * r),
-                    lon: preInfo.lon + (thisObj.widthDD * c)
+                    latMs: preInfo.latMs + (thisObj.heightMs * r),
+                    lonMs: preInfo.lonMs + (thisObj.widthMs * c)
                 };
             };
             //4次から6次(と5倍)メッシュコードからメッシュ情報
@@ -125,8 +125,8 @@ var jisX0410;
                 } //end if
                 return {
                     meshCode: preInfo.meshCode + thisObj.splitString + cd,
-                    lat: preInfo.lat + (thisObj.heightDD * r),
-                    lon: preInfo.lon + (thisObj.widthDD * c)
+                    latMs: preInfo.latMs + (thisObj.heightMs * r),
+                    lonMs: preInfo.lonMs + (thisObj.widthMs * c)
                 };
             }; //end method
             //2倍地域メッシュ
@@ -146,14 +146,14 @@ var jisX0410;
                 c = c / 2;
                 return {
                     meshCode: preInfo.meshCode + thisObj.splitString + code,
-                    lat: preInfo.lat + (thisObj.heightDD * r),
-                    lon: preInfo.lon + (thisObj.widthDD * c)
+                    latMs: preInfo.latMs + (thisObj.heightMs * r),
+                    lonMs: preInfo.lonMs + (thisObj.widthMs * c)
                 };
             };
             var mesh1 = new MeshSchema();
             mesh1.label = "第1次地域区画(約80km四方)";
-            mesh1.widthDD = 1;
-            mesh1.heightDD = 2 / 3;
+            mesh1.widthMs = 1 * MeshSchema.MILLISECOND;
+            mesh1.heightMs = MeshSchema.MILLISECOND * (40 / 60);
             mesh1.meshCodeLength = 4;
             mesh1.getMeshCode = mesh1_getCode.bind(mesh1);
             mesh1.meshCode2MeshInfo = mesh1cd2mesh.bind(mesh1);
@@ -222,13 +222,16 @@ var jisX0410;
          */
         MeshSchema._getCodeBase = function (thisObj, latlon, getCoords) {
             var preMeshInfo = thisObj.parent.getMeshCode(latlon);
-            var r = Math.floor((latlon[0] - preMeshInfo.lat) / thisObj.heightDD);
-            var c = Math.floor((latlon[1] - preMeshInfo.lon) / thisObj.widthDD);
+            var latMs = latlon[0] * MeshSchema.MILLISECOND;
+            var lonMs = latlon[1] * MeshSchema.MILLISECOND;
+            var r = Math.floor((latMs - preMeshInfo.latMs) / thisObj.heightMs);
+            var c = Math.floor((lonMs - preMeshInfo.lonMs) / thisObj.widthMs);
             var code = getCoords.bind(thisObj)(preMeshInfo, r, c);
-            var lat = preMeshInfo.lat + (r * thisObj.heightDD);
-            var lon = preMeshInfo.lon + (c * thisObj.widthDD);
-            return { meshCode: code, lat: lat, lon: lon };
+            var lat = preMeshInfo.latMs + (r * thisObj.heightMs);
+            var lon = preMeshInfo.lonMs + (c * thisObj.widthMs);
+            return { meshCode: code, latMs: lat, lonMs: lon };
         }; //end method
+        MeshSchema.MILLISECOND = 3600000;
         return MeshSchema;
     }()); //end class
     jisX0410.MeshSchema = MeshSchema;
@@ -255,10 +258,10 @@ var jisX0410;
             //左下隅のメッシュを取得して左下隅座標を書き換え
             var leftLower = this._getMeshInfoFromBl([extent.ymin, extent.xmin], schema);
             var minXY = leftLower.coords[0];
-            var widthDD = Math.sqrt(Math.pow(extent.xmax - minXY[0], 2));
-            var heightDD = Math.sqrt(Math.pow(extent.ymax - minXY[1], 2));
-            var cols = Math.ceil(widthDD / schema.widthDD);
-            var rows = Math.ceil(heightDD / schema.heightDD);
+            var widthMs = Math.sqrt(Math.pow(extent.xmax - minXY[0], 2)) * jisX0410.MeshSchema.MILLISECOND;
+            var heightMs = Math.sqrt(Math.pow(extent.ymax - minXY[1], 2)) * jisX0410.MeshSchema.MILLISECOND;
+            var cols = Math.ceil(widthMs / schema.widthMs);
+            var rows = Math.ceil(heightMs / schema.heightMs);
             return cols * rows;
         }; //end method
         /**
@@ -271,10 +274,10 @@ var jisX0410;
             //左下隅のメッシュを取得して左下隅座標を書き換え
             var leftLower = this._getMeshInfoFromBl([extent.ymin, extent.xmin], schema);
             var minXY = leftLower.coords[0];
-            var widthDD = Math.sqrt(Math.pow(extent.xmax - minXY[0], 2));
-            var heightDD = Math.sqrt(Math.pow(extent.ymax - minXY[1], 2));
-            var cols = Math.ceil(widthDD / schema.widthDD);
-            var rows = Math.ceil(heightDD / schema.heightDD);
+            var widthMs = Math.sqrt(Math.pow(extent.xmax - minXY[0], 2)) * jisX0410.MeshSchema.MILLISECOND;
+            var heightMs = Math.sqrt(Math.pow(extent.ymax - minXY[1], 2)) * jisX0410.MeshSchema.MILLISECOND;
+            var cols = Math.ceil(widthMs / schema.widthMs);
+            var rows = Math.ceil(heightMs / schema.heightMs);
             if (cols < 1)
                 cols = 1;
             if (rows < 1)
@@ -284,8 +287,10 @@ var jisX0410;
                 //行列を計算
                 var r = Math.floor(index / cols);
                 var c = index % cols;
-                var x = (minXY[0] + schema.widthDD / 2) + (c * schema.widthDD);
-                var y = (minXY[1] + schema.heightDD / 2) + (r * schema.heightDD);
+                var x = (minXY[0] * jisX0410.MeshSchema.MILLISECOND + schema.widthMs / 2) + (c * schema.widthMs);
+                var y = (minXY[1] * jisX0410.MeshSchema.MILLISECOND + schema.heightMs / 2) + (r * schema.heightMs);
+                x = x / jisX0410.MeshSchema.MILLISECOND;
+                y = y / jisX0410.MeshSchema.MILLISECOND;
                 //計算した緯度経度からメッシュ情報を取得
                 var info = this._getMeshInfoFromBl([y, x], schema);
                 results[index] = this._toGeoJson(info);
@@ -302,10 +307,10 @@ var jisX0410;
             //左下隅のメッシュを取得して左下隅座標を書き換え
             var leftLower = this._getMeshInfoFromBl([extent.ymin, extent.xmin], schema);
             var minXY = leftLower.coords[0];
-            var widthDD = Math.sqrt(Math.pow(extent.xmax - minXY[0], 2));
-            var heightDD = Math.sqrt(Math.pow(extent.ymax - minXY[1], 2));
-            var cols = Math.ceil(widthDD / schema.widthDD);
-            var rows = Math.ceil(heightDD / schema.heightDD);
+            var widthMs = Math.sqrt(Math.pow(extent.xmax - minXY[0], 2)) * jisX0410.MeshSchema.MILLISECOND;
+            var heightMs = Math.sqrt(Math.pow(extent.ymax - minXY[1], 2)) * jisX0410.MeshSchema.MILLISECOND;
+            var cols = Math.ceil(widthMs / schema.widthMs);
+            var rows = Math.ceil(heightMs / schema.heightMs);
             if (cols < 1)
                 cols = 1;
             if (rows < 1)
@@ -315,8 +320,10 @@ var jisX0410;
                 //行列を計算
                 var r = Math.floor(index / cols);
                 var c = index % cols;
-                var x = (minXY[0] + schema.widthDD / 2) + (c * schema.widthDD);
-                var y = (minXY[1] + schema.heightDD / 2) + (r * schema.heightDD);
+                var x = (minXY[0] * jisX0410.MeshSchema.MILLISECOND + schema.widthMs / 2) + (c * schema.widthMs);
+                var y = (minXY[1] * jisX0410.MeshSchema.MILLISECOND + schema.heightMs / 2) + (r * schema.heightMs);
+                x = x / jisX0410.MeshSchema.MILLISECOND;
+                y = y / jisX0410.MeshSchema.MILLISECOND;
                 //計算した緯度経度からメッシュ情報を取得
                 var info = this._getMeshInfoFromBl([y, x], schema);
                 results[index] = this._toEsriJson(info);
@@ -334,10 +341,10 @@ var jisX0410;
             //左下隅のメッシュを取得して左下隅座標を書き換え
             var leftLower = this._getMeshInfoFromBl([extent.ymin, extent.xmin], schema);
             var minXY = leftLower.coords[0];
-            var widthDD = Math.sqrt(Math.pow(extent.xmax - minXY[0], 2));
-            var heightDD = Math.sqrt(Math.pow(extent.ymax - minXY[1], 2));
-            var cols = Math.ceil(widthDD / schema.widthDD);
-            var rows = Math.ceil(heightDD / schema.heightDD);
+            var widthMs = Math.sqrt(Math.pow(extent.xmax - minXY[0], 2)) * jisX0410.MeshSchema.MILLISECOND;
+            var heightMs = Math.sqrt(Math.pow(extent.ymax - minXY[1], 2)) * jisX0410.MeshSchema.MILLISECOND;
+            var cols = Math.ceil(widthMs / schema.widthMs);
+            var rows = Math.ceil(heightMs / schema.heightMs);
             if (cols < 1)
                 cols = 1;
             if (rows < 1)
@@ -347,8 +354,10 @@ var jisX0410;
                 //行列を計算
                 var r = Math.floor(index / cols);
                 var c = index % cols;
-                var x = (minXY[0] + schema.widthDD / 2) + (c * schema.widthDD);
-                var y = (minXY[1] + schema.heightDD / 2) + (r * schema.heightDD);
+                var x = (minXY[0] * jisX0410.MeshSchema.MILLISECOND + schema.widthMs / 2) + (c * schema.widthMs);
+                var y = (minXY[1] * jisX0410.MeshSchema.MILLISECOND + schema.heightMs / 2) + (r * schema.heightMs);
+                x = x / jisX0410.MeshSchema.MILLISECOND;
+                y = y / jisX0410.MeshSchema.MILLISECOND;
                 //計算した緯度経度からメッシュ情報を取得
                 var info = this._getMeshInfoFromBl([y, x], schema);
                 results[index] = {
@@ -568,8 +577,10 @@ var jisX0410;
             var r = Math.floor(index / divCount);
             var c = index % divCount;
             //緯度経度中心を求めておく
-            var clat = rootsInfo.lat + (r * schema.heightDD) + (schema.heightDD / 2.0);
-            var clon = rootsInfo.lon + (c * schema.widthDD) + (schema.widthDD / 2.0);
+            var clat = rootsInfo.latMs + (r * schema.heightMs) + (schema.heightMs / 2.0);
+            var clon = rootsInfo.lonMs + (c * schema.widthMs) + (schema.widthMs / 2.0);
+            clat = clat / jisX0410.MeshSchema.MILLISECOND;
+            clon = clon / jisX0410.MeshSchema.MILLISECOND;
             //メッシュコード取得
             return this._getMeshInfoFromBl([clat, clon], schema);
         }; //end method
@@ -584,9 +595,11 @@ var jisX0410;
             var meshInfo = schema.getMeshCode(latlon);
             // 時計回りでまわしておく
             var coords = [
-                [meshInfo.lon, meshInfo.lat], [meshInfo.lon, meshInfo.lat + schema.heightDD],
-                [meshInfo.lon + schema.widthDD, meshInfo.lat + schema.heightDD], [meshInfo.lon + schema.widthDD, meshInfo.lat],
-                [meshInfo.lon, meshInfo.lat]
+                [meshInfo.lonMs / jisX0410.MeshSchema.MILLISECOND, meshInfo.latMs / jisX0410.MeshSchema.MILLISECOND],
+                [meshInfo.lonMs / jisX0410.MeshSchema.MILLISECOND, (meshInfo.latMs + schema.heightMs) / jisX0410.MeshSchema.MILLISECOND],
+                [(meshInfo.lonMs + schema.widthMs) / jisX0410.MeshSchema.MILLISECOND, (meshInfo.latMs + schema.heightMs) / jisX0410.MeshSchema.MILLISECOND],
+                [(meshInfo.lonMs + schema.widthMs) / jisX0410.MeshSchema.MILLISECOND, meshInfo.latMs / jisX0410.MeshSchema.MILLISECOND],
+                [meshInfo.lonMs / jisX0410.MeshSchema.MILLISECOND, meshInfo.latMs / jisX0410.MeshSchema.MILLISECOND]
             ];
             //反時計回り時
             //coords.reverse();

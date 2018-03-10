@@ -285,8 +285,10 @@ var samples;
             if (!sc)
                 return;
             var info = sc.meshCode2MeshInfo(meshCode);
-            var lon = info.lon + sc.widthDD / 2.0;
-            var lat = info.lat + sc.heightDD / 2.0;
+            var lon = info.lonMs + sc.widthMs / 2.0;
+            var lat = info.latMs + sc.heightMs / 2.0;
+            lon = lon / jisX0410.MeshSchema.MILLISECOND;
+            lat = lat / jisX0410.MeshSchema.MILLISECOND;
             var map = this._map;
             map.setView([lat, lon], map.getZoom());
         };

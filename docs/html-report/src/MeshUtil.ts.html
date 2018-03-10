@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">96.3% </span>
+        <span class="strong">96.45% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>182/189</span>
+        <span class='fraction'>190/197</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">83.93% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>20/20</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">96.26% </span>
+        <span class="strong">96.41% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>180/187</span>
+        <span class='fraction'>188/195</span>
       </div>
     </div>
   </div>
@@ -580,7 +580,20 @@
 535
 536
 537
-538</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -684,6 +697,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">444449×</span>
 <span class="cline-any cline-yes">444449×</span>
+<span class="cline-any cline-yes">444449×</span>
+<span class="cline-any cline-yes">444449×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">444449×</span>
 <span class="cline-any cline-yes">444449×</span>
@@ -722,6 +738,8 @@
 <span class="cline-any cline-yes">444449×</span>
 <span class="cline-any cline-yes">444449×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">444449×</span>
+<span class="cline-any cline-yes">444449×</span>
 <span class="cline-any cline-yes">444449×</span>
 <span class="cline-any cline-yes">444449×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -763,6 +781,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">444449×</span>
 <span class="cline-any cline-yes">444449×</span>
+<span class="cline-any cline-yes">444449×</span>
+<span class="cline-any cline-yes">444449×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">444449×</span>
 <span class="cline-any cline-yes">444449×</span>
@@ -991,7 +1012,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1922×</span>
 <span class="cline-any cline-yes">1922×</span>
-<span class="cline-any cline-yes">457170×</span>
+<span class="cline-any cline-yes">417728×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1922×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1029,6 +1050,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3058×</span>
 <span class="cline-any cline-yes">3058×</span>
+<span class="cline-any cline-yes">3058×</span>
+<span class="cline-any cline-yes">3058×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3058×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1045,6 +1069,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1336565×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1181,11 +1207,11 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
       let leftLower = this._getMeshInfoFromBl([extent.ymin,extent.xmin], schema);
       let minXY = leftLower.coords[0];
 &nbsp;
-      let widthDD = Math.sqrt(Math.pow(extent.xmax-minXY[0],2));
-      let heightDD = Math.sqrt(Math.pow(extent.ymax -minXY[1],2));
+      let widthMs = Math.sqrt(Math.pow(extent.xmax-minXY[0],2)) * MeshSchema.MILLISECOND;
+      let heightMs = Math.sqrt(Math.pow(extent.ymax -minXY[1],2)) * MeshSchema.MILLISECOND;
 &nbsp;
-      let cols = Math.ceil(widthDD / schema.widthDD);
-      let rows = Math.ceil(heightDD / schema.heightDD);
+      let cols = Math.ceil(widthMs / schema.widthMs);
+      let rows = Math.ceil(heightMs / schema.heightMs);
       
       return cols * rows;
     }//end method
@@ -1203,11 +1229,11 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
       let leftLower = this._getMeshInfoFromBl([extent.ymin,extent.xmin], schema);
       let minXY = leftLower.coords[0];
 &nbsp;
-      let widthDD = Math.sqrt(Math.pow(extent.xmax-minXY[0],2));
-      let heightDD = Math.sqrt(Math.pow(extent.ymax -minXY[1],2));
+      let widthMs = Math.sqrt(Math.pow(extent.xmax-minXY[0],2)) * MeshSchema.MILLISECOND;
+      let heightMs = Math.sqrt(Math.pow(extent.ymax -minXY[1],2)) * MeshSchema.MILLISECOND;
 &nbsp;
-      let cols = Math.ceil(widthDD / schema.widthDD);
-      let rows = Math.ceil(heightDD / schema.heightDD);
+      let cols = Math.ceil(widthMs / schema.widthMs);
+      let rows = Math.ceil(heightMs / schema.heightMs);
       <span class="missing-if-branch" title="if path not taken" >I</span>if (cols &lt;1)
 <span class="cstat-no" title="statement not covered" >        cols = 1;</span>
       <span class="missing-if-branch" title="if path not taken" >I</span>if (rows &lt;1)
@@ -1219,8 +1245,11 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
         let r = Math.floor(index / cols);
         let c = index % cols;
 &nbsp;
-        let x = (minXY[0] + schema.widthDD/2) + (c * schema.widthDD);
-        let y = (minXY[1] + schema.heightDD/2) + (r * schema.heightDD);
+        let x = (minXY[0] * MeshSchema.MILLISECOND + schema.widthMs/2) + (c * schema.widthMs);
+        let y = (minXY[1] * MeshSchema.MILLISECOND + schema.heightMs/2) + (r * schema.heightMs);
+        x = x / MeshSchema.MILLISECOND;
+        y = y / MeshSchema.MILLISECOND;
+&nbsp;
         //計算した緯度経度からメッシュ情報を取得
         let info:IMesh = this._getMeshInfoFromBl([y,x], schema);
         results[index] = this._toGeoJson(info);
@@ -1243,11 +1272,11 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
       let leftLower = this._getMeshInfoFromBl([extent.ymin,extent.xmin], schema);
       let minXY = leftLower.coords[0];
 &nbsp;
-      let widthDD = Math.sqrt(Math.pow(extent.xmax-minXY[0],2));
-      let heightDD = Math.sqrt(Math.pow(extent.ymax -minXY[1],2));
+      let widthMs = Math.sqrt(Math.pow(extent.xmax-minXY[0],2)) * MeshSchema.MILLISECOND;
+      let heightMs = Math.sqrt(Math.pow(extent.ymax -minXY[1],2)) * MeshSchema.MILLISECOND;
 &nbsp;
-      let cols = Math.ceil(widthDD / schema.widthDD);
-      let rows = Math.ceil(heightDD / schema.heightDD);
+      let cols = Math.ceil(widthMs / schema.widthMs);
+      let rows = Math.ceil(heightMs / schema.heightMs);
       <span class="missing-if-branch" title="if path not taken" >I</span>if (cols &lt;1)
 <span class="cstat-no" title="statement not covered" >        cols = 1;</span>
       <span class="missing-if-branch" title="if path not taken" >I</span>if (rows &lt;1)
@@ -1259,8 +1288,10 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
         let r = Math.floor(index / cols);
         let c = index % cols;
 &nbsp;
-        let x = (minXY[0] + schema.widthDD/2) + (c * schema.widthDD);
-        let y = (minXY[1] + schema.heightDD/2) + (r * schema.heightDD);
+        let x = (minXY[0] * MeshSchema.MILLISECOND + schema.widthMs/2) + (c * schema.widthMs);
+        let y = (minXY[1] * MeshSchema.MILLISECOND + schema.heightMs/2) + (r * schema.heightMs);
+        x = x / MeshSchema.MILLISECOND;
+        y = y / MeshSchema.MILLISECOND;
         //計算した緯度経度からメッシュ情報を取得
         let info:IMesh = this._getMeshInfoFromBl([y,x], schema);
         results[index] = this._toEsriJson(info);
@@ -1282,11 +1313,11 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
       let leftLower = this._getMeshInfoFromBl([extent.ymin,extent.xmin], schema);
       let minXY = leftLower.coords[0];
 &nbsp;
-      let widthDD = Math.sqrt(Math.pow(extent.xmax-minXY[0],2));
-      let heightDD = Math.sqrt(Math.pow(extent.ymax -minXY[1],2));
+      let widthMs = Math.sqrt(Math.pow(extent.xmax-minXY[0],2)) * MeshSchema.MILLISECOND;
+      let heightMs = Math.sqrt(Math.pow(extent.ymax -minXY[1],2)) * MeshSchema.MILLISECOND;
 &nbsp;
-      let cols = Math.ceil(widthDD / schema.widthDD);
-      let rows = Math.ceil(heightDD / schema.heightDD);
+      let cols = Math.ceil(widthMs / schema.widthMs);
+      let rows = Math.ceil(heightMs / schema.heightMs);
       <span class="missing-if-branch" title="if path not taken" >I</span>if (cols &lt;1)
 <span class="cstat-no" title="statement not covered" >        cols = 1;</span>
       <span class="missing-if-branch" title="if path not taken" >I</span>if (rows &lt;1)
@@ -1298,8 +1329,11 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
         let r = Math.floor(index / cols);
         let c = index % cols;
 &nbsp;
-        let x = (minXY[0] + schema.widthDD/2) + (c * schema.widthDD);
-        let y = (minXY[1] + schema.heightDD/2) + (r * schema.heightDD);
+        let x = (minXY[0]*MeshSchema.MILLISECOND + schema.widthMs/2) + (c * schema.widthMs);
+        let y = (minXY[1]*MeshSchema.MILLISECOND + schema.heightMs/2) + (r * schema.heightMs);
+        x = x / MeshSchema.MILLISECOND;
+        y = y / MeshSchema.MILLISECOND;
+&nbsp;
         //計算した緯度経度からメッシュ情報を取得
         let info:IMesh = this._getMeshInfoFromBl([y,x], schema);
         results[index] = { 
@@ -1564,8 +1598,11 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
       let r = Math.floor(index / divCount);
       let c = index % divCount;
       //緯度経度中心を求めておく
-      let clat = rootsInfo.lat + (r * schema.heightDD) + (schema.heightDD / 2.0);
-      let clon = rootsInfo.lon + (c * schema.widthDD)  + (schema.widthDD / 2.0);
+      let clat = rootsInfo.latMs + (r * schema.heightMs) + (schema.heightMs / 2.0);
+      let clon = rootsInfo.lonMs + (c * schema.widthMs)  + (schema.widthMs / 2.0);
+      clat = clat / MeshSchema.MILLISECOND;
+      clon = clon / MeshSchema.MILLISECOND;
+&nbsp;
       //メッシュコード取得
       return this._getMeshInfoFromBl([clat,clon],schema)
     }//end method
@@ -1582,9 +1619,11 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
       
       // 時計回りでまわしておく
       let coords:Array&lt;[number, number]&gt; = [
-        [meshInfo.lon, meshInfo.lat], [meshInfo.lon, meshInfo.lat + schema.heightDD], 
-          [meshInfo.lon + schema.widthDD, meshInfo.lat + schema.heightDD], [meshInfo.lon + schema.widthDD, meshInfo.lat],
-        [meshInfo.lon, meshInfo.lat] 
+        [meshInfo.lonMs / MeshSchema.MILLISECOND, meshInfo.latMs / MeshSchema.MILLISECOND],
+          [meshInfo.lonMs / MeshSchema.MILLISECOND, (meshInfo.latMs + schema.heightMs) / MeshSchema.MILLISECOND], 
+          [(meshInfo.lonMs + schema.widthMs) / MeshSchema.MILLISECOND, (meshInfo.latMs + schema.heightMs) / MeshSchema.MILLISECOND], 
+          [(meshInfo.lonMs + schema.widthMs) / MeshSchema.MILLISECOND, meshInfo.latMs / MeshSchema.MILLISECOND],
+        [meshInfo.lonMs / MeshSchema.MILLISECOND, meshInfo.latMs / MeshSchema.MILLISECOND] 
       ];
       //反時計回り時
       //coords.reverse();
@@ -1660,7 +1699,7 @@ namespace <span class="branch-1 cbranch-no" title="branch not covered" >jisX0410
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Feb 11 2018 16:25:35 GMT+0900 (東京 (標準時))
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat Mar 10 2018 19:50:58 GMT+0900 (東京 (標準時))
 </div>
 </div>
 <script src="../prettify.js"></script>

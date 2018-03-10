@@ -4,16 +4,17 @@ declare namespace jisX0410 {
         /** メッシュコード */
         meshCode: string;
         /** 緯度 */
-        lat: number;
+        latMs: number;
         /** 経度 */
-        lon: number;
+        lonMs: number;
     }
     /** メッシュ定義の管理クラス */
     class MeshSchema {
-        /** 緯度差 */
-        widthDD: number;
-        /** 経度差 */
-        heightDD: number;
+        static readonly MILLISECOND: number;
+        /** 経度差ミリ秒 */
+        widthMs: number;
+        /** 緯度差ミリ秒 */
+        heightMs: number;
         /** 分割数 */
         splitCount: number;
         /** 親メッシュ定義 */

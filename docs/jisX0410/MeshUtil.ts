@@ -62,11 +62,11 @@ namespace jisX0410
       let leftLower = this._getMeshInfoFromBl([extent.ymin,extent.xmin], schema);
       let minXY = leftLower.coords[0];
 
-      let widthDD = Math.sqrt(Math.pow(extent.xmax-minXY[0],2));
-      let heightDD = Math.sqrt(Math.pow(extent.ymax -minXY[1],2));
+      let widthMs = Math.sqrt(Math.pow(extent.xmax-minXY[0],2)) * MeshSchema.MILLISECOND;
+      let heightMs = Math.sqrt(Math.pow(extent.ymax -minXY[1],2)) * MeshSchema.MILLISECOND;
 
-      let cols = Math.ceil(widthDD / schema.widthDD);
-      let rows = Math.ceil(heightDD / schema.heightDD);
+      let cols = Math.ceil(widthMs / schema.widthMs);
+      let rows = Math.ceil(heightMs / schema.heightMs);
       
       return cols * rows;
     }//end method
@@ -84,11 +84,11 @@ namespace jisX0410
       let leftLower = this._getMeshInfoFromBl([extent.ymin,extent.xmin], schema);
       let minXY = leftLower.coords[0];
 
-      let widthDD = Math.sqrt(Math.pow(extent.xmax-minXY[0],2));
-      let heightDD = Math.sqrt(Math.pow(extent.ymax -minXY[1],2));
+      let widthMs = Math.sqrt(Math.pow(extent.xmax-minXY[0],2)) * MeshSchema.MILLISECOND;
+      let heightMs = Math.sqrt(Math.pow(extent.ymax -minXY[1],2)) * MeshSchema.MILLISECOND;
 
-      let cols = Math.ceil(widthDD / schema.widthDD);
-      let rows = Math.ceil(heightDD / schema.heightDD);
+      let cols = Math.ceil(widthMs / schema.widthMs);
+      let rows = Math.ceil(heightMs / schema.heightMs);
       if (cols <1)
         cols = 1;
       if (rows <1)
@@ -100,8 +100,11 @@ namespace jisX0410
         let r = Math.floor(index / cols);
         let c = index % cols;
 
-        let x = (minXY[0] + schema.widthDD/2) + (c * schema.widthDD);
-        let y = (minXY[1] + schema.heightDD/2) + (r * schema.heightDD);
+        let x = (minXY[0] * MeshSchema.MILLISECOND + schema.widthMs/2) + (c * schema.widthMs);
+        let y = (minXY[1] * MeshSchema.MILLISECOND + schema.heightMs/2) + (r * schema.heightMs);
+        x = x / MeshSchema.MILLISECOND;
+        y = y / MeshSchema.MILLISECOND;
+
         //計算した緯度経度からメッシュ情報を取得
         let info:IMesh = this._getMeshInfoFromBl([y,x], schema);
         results[index] = this._toGeoJson(info);
@@ -124,11 +127,11 @@ namespace jisX0410
       let leftLower = this._getMeshInfoFromBl([extent.ymin,extent.xmin], schema);
       let minXY = leftLower.coords[0];
 
-      let widthDD = Math.sqrt(Math.pow(extent.xmax-minXY[0],2));
-      let heightDD = Math.sqrt(Math.pow(extent.ymax -minXY[1],2));
+      let widthMs = Math.sqrt(Math.pow(extent.xmax-minXY[0],2)) * MeshSchema.MILLISECOND;
+      let heightMs = Math.sqrt(Math.pow(extent.ymax -minXY[1],2)) * MeshSchema.MILLISECOND;
 
-      let cols = Math.ceil(widthDD / schema.widthDD);
-      let rows = Math.ceil(heightDD / schema.heightDD);
+      let cols = Math.ceil(widthMs / schema.widthMs);
+      let rows = Math.ceil(heightMs / schema.heightMs);
       if (cols <1)
         cols = 1;
       if (rows <1)
@@ -140,8 +143,10 @@ namespace jisX0410
         let r = Math.floor(index / cols);
         let c = index % cols;
 
-        let x = (minXY[0] + schema.widthDD/2) + (c * schema.widthDD);
-        let y = (minXY[1] + schema.heightDD/2) + (r * schema.heightDD);
+        let x = (minXY[0] * MeshSchema.MILLISECOND + schema.widthMs/2) + (c * schema.widthMs);
+        let y = (minXY[1] * MeshSchema.MILLISECOND + schema.heightMs/2) + (r * schema.heightMs);
+        x = x / MeshSchema.MILLISECOND;
+        y = y / MeshSchema.MILLISECOND;
         //計算した緯度経度からメッシュ情報を取得
         let info:IMesh = this._getMeshInfoFromBl([y,x], schema);
         results[index] = this._toEsriJson(info);
@@ -163,11 +168,11 @@ namespace jisX0410
       let leftLower = this._getMeshInfoFromBl([extent.ymin,extent.xmin], schema);
       let minXY = leftLower.coords[0];
 
-      let widthDD = Math.sqrt(Math.pow(extent.xmax-minXY[0],2));
-      let heightDD = Math.sqrt(Math.pow(extent.ymax -minXY[1],2));
+      let widthMs = Math.sqrt(Math.pow(extent.xmax-minXY[0],2)) * MeshSchema.MILLISECOND;
+      let heightMs = Math.sqrt(Math.pow(extent.ymax -minXY[1],2)) * MeshSchema.MILLISECOND;
 
-      let cols = Math.ceil(widthDD / schema.widthDD);
-      let rows = Math.ceil(heightDD / schema.heightDD);
+      let cols = Math.ceil(widthMs / schema.widthMs);
+      let rows = Math.ceil(heightMs / schema.heightMs);
       if (cols <1)
         cols = 1;
       if (rows <1)
@@ -179,8 +184,11 @@ namespace jisX0410
         let r = Math.floor(index / cols);
         let c = index % cols;
 
-        let x = (minXY[0] + schema.widthDD/2) + (c * schema.widthDD);
-        let y = (minXY[1] + schema.heightDD/2) + (r * schema.heightDD);
+        let x = (minXY[0]*MeshSchema.MILLISECOND + schema.widthMs/2) + (c * schema.widthMs);
+        let y = (minXY[1]*MeshSchema.MILLISECOND + schema.heightMs/2) + (r * schema.heightMs);
+        x = x / MeshSchema.MILLISECOND;
+        y = y / MeshSchema.MILLISECOND;
+
         //計算した緯度経度からメッシュ情報を取得
         let info:IMesh = this._getMeshInfoFromBl([y,x], schema);
         results[index] = { 
@@ -445,8 +453,11 @@ namespace jisX0410
       let r = Math.floor(index / divCount);
       let c = index % divCount;
       //緯度経度中心を求めておく
-      let clat = rootsInfo.lat + (r * schema.heightDD) + (schema.heightDD / 2.0);
-      let clon = rootsInfo.lon + (c * schema.widthDD)  + (schema.widthDD / 2.0);
+      let clat = rootsInfo.latMs + (r * schema.heightMs) + (schema.heightMs / 2.0);
+      let clon = rootsInfo.lonMs + (c * schema.widthMs)  + (schema.widthMs / 2.0);
+      clat = clat / MeshSchema.MILLISECOND;
+      clon = clon / MeshSchema.MILLISECOND;
+
       //メッシュコード取得
       return this._getMeshInfoFromBl([clat,clon],schema)
     }//end method
@@ -463,9 +474,11 @@ namespace jisX0410
       
       // 時計回りでまわしておく
       let coords:Array<[number, number]> = [
-        [meshInfo.lon, meshInfo.lat], [meshInfo.lon, meshInfo.lat + schema.heightDD], 
-          [meshInfo.lon + schema.widthDD, meshInfo.lat + schema.heightDD], [meshInfo.lon + schema.widthDD, meshInfo.lat],
-        [meshInfo.lon, meshInfo.lat] 
+        [meshInfo.lonMs / MeshSchema.MILLISECOND, meshInfo.latMs / MeshSchema.MILLISECOND],
+          [meshInfo.lonMs / MeshSchema.MILLISECOND, (meshInfo.latMs + schema.heightMs) / MeshSchema.MILLISECOND], 
+          [(meshInfo.lonMs + schema.widthMs) / MeshSchema.MILLISECOND, (meshInfo.latMs + schema.heightMs) / MeshSchema.MILLISECOND], 
+          [(meshInfo.lonMs + schema.widthMs) / MeshSchema.MILLISECOND, meshInfo.latMs / MeshSchema.MILLISECOND],
+        [meshInfo.lonMs / MeshSchema.MILLISECOND, meshInfo.latMs / MeshSchema.MILLISECOND] 
       ];
       //反時計回り時
       //coords.reverse();

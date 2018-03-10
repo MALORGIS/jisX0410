@@ -6,18 +6,22 @@ namespace jisX0410
     /** メッシュコード */
     meshCode: string;
     /** 緯度 */
-    lat: number;
+    latMs: number;
     /** 経度 */
-    lon: number;
+    lonMs: number;
   }//end class
 
   /** メッシュ定義の管理クラス */
   export class MeshSchema
   {
-    /** 緯度差 */
-    public widthDD: number;
-    /** 経度差 */
-    public heightDD: number;
+    public static readonly MILLISECOND = 3600000;
+
+    /** 経度差ミリ秒 */
+    public widthMs: number;
+    /** 緯度差ミリ秒 */
+    public heightMs: number;
+
+
     /** 分割数 */
     public splitCount: number;
     /** 親メッシュ定義 */
@@ -47,8 +51,8 @@ namespace jisX0410
       this.splitCount = splitCount;
 
       if (parent){
-        this.widthDD = parent.widthDD / splitCount;
-        this.heightDD = parent.heightDD / splitCount;
+        this.widthMs = parent.widthMs / splitCount;
+        this.heightMs = parent.heightMs / splitCount;
       }//end if
     }//end method
 
@@ -60,14 +64,14 @@ namespace jisX0410
       //1次メッシュコード生成用のコード
       let mesh1_getCode: (latlon:[number,number]) => IMeshInfo  = 
       function(latlon: [number, number]): IMeshInfo{
-        let r = Math.round(Math.floor(latlon[0] * 15.0 / 10.0));
+        let r = Math.round(Math.floor(latlon[0] * 1.5));
         let c = Math.round(Math.floor(latlon[1] - 100.0));
 
         //メッシュコード
         let code = String(r) + String(c);
-        let lat = r / 15.0 * 10.0;
-        let lon = c + 100.0;
-        return { meshCode: code, lat: lat, lon:lon };
+        let lat = (r * MeshSchema.MILLISECOND) / 1.5;//ミリ秒単位
+        let lon = (c + 100.0) * 3600000 ;//ミリ秒単位
+        return { meshCode: code, latMs: lat, lonMs:lon };
       };
       //2-3次メッシュコード生成用のコード
       let mesh2_3_getCode :(latlon:[number,number]) => IMeshInfo =
@@ -126,9 +130,9 @@ namespace jisX0410
         let r = parseInt( meshCode.slice(0,2) );
         let c = parseInt( meshCode.slice(2,4) );
 
-        let lat = r / 15.0 * 10.0;
-        let lon = c + 100.0;
-        return { meshCode: meshCode, lat: lat, lon:lon };
+        let lat = (r * MeshSchema.MILLISECOND) / 1.5;
+        let lon = (c + 100.0) * MeshSchema.MILLISECOND;
+        return { meshCode: meshCode, latMs: lat, lonMs:lon };
       };
       //2次 3次メッシュコードからメッシュ情報
       let mesh2_3cd2mesh: (meshCode:string) => IMeshInfo =
@@ -147,8 +151,8 @@ namespace jisX0410
 
         return {
           meshCode: preInfo.meshCode + thisObj.splitString + String(r) + String(c),
-          lat: preInfo.lat + (thisObj.heightDD * r),
-          lon: preInfo.lon + (thisObj.widthDD * c)
+          latMs: preInfo.latMs + (thisObj.heightMs * r),
+          lonMs: preInfo.lonMs + (thisObj.widthMs * c)
         };
       };
       //4次から6次(と5倍)メッシュコードからメッシュ情報
@@ -179,8 +183,8 @@ namespace jisX0410
         
         return {
           meshCode: preInfo.meshCode + thisObj.splitString + cd,
-          lat: preInfo.lat + (thisObj.heightDD * r),
-          lon: preInfo.lon + (thisObj.widthDD * c)
+          latMs: preInfo.latMs + (thisObj.heightMs * r),
+          lonMs: preInfo.lonMs + (thisObj.widthMs * c)
         };
       };//end method
       //2倍地域メッシュ
@@ -204,8 +208,8 @@ namespace jisX0410
 
         return {
           meshCode: preInfo.meshCode + thisObj.splitString + code,
-          lat: preInfo.lat + (thisObj.heightDD * r),
-          lon: preInfo.lon + (thisObj.widthDD * c)
+          latMs: preInfo.latMs + (thisObj.heightMs * r),
+          lonMs: preInfo.lonMs + (thisObj.widthMs * c)
         };
       };
 
@@ -214,8 +218,8 @@ namespace jisX0410
 
       let mesh1 = new MeshSchema();
       mesh1.label = "第1次地域区画(約80km四方)";
-      mesh1.widthDD = 1;
-      mesh1.heightDD = 2 / 3;
+      mesh1.widthMs = 1 * MeshSchema.MILLISECOND;
+      mesh1.heightMs = MeshSchema.MILLISECOND * (40 / 60);
       mesh1.meshCodeLength = 4;
       mesh1.getMeshCode = mesh1_getCode.bind(mesh1);
       mesh1.meshCode2MeshInfo = mesh1cd2mesh.bind(mesh1);
@@ -299,14 +303,17 @@ namespace jisX0410
 
       let preMeshInfo = thisObj.parent.getMeshCode(latlon);
 
-      let r:number = Math.floor((latlon[0] - preMeshInfo.lat) / thisObj.heightDD);
-      let c:number = Math.floor((latlon[1] - preMeshInfo.lon) / thisObj.widthDD);
+      let latMs = latlon[0] * MeshSchema.MILLISECOND;
+      let lonMs = latlon[1] * MeshSchema.MILLISECOND;
+
+      let r:number = Math.floor((latMs- preMeshInfo.latMs) / thisObj.heightMs);
+      let c:number = Math.floor((lonMs - preMeshInfo.lonMs) / thisObj.widthMs);
       let code:string = getCoords.bind(thisObj)(preMeshInfo,r,c);
 
-      let lat:number = preMeshInfo.lat + (r * thisObj.heightDD);
-      let lon:number = preMeshInfo.lon + (c * thisObj.widthDD);
+      let lat:number = preMeshInfo.latMs + (r * thisObj.heightMs);
+      let lon:number = preMeshInfo.lonMs + (c * thisObj.widthMs);
       
-      return { meshCode: code, lat:lat, lon:lon };
+      return { meshCode: code, latMs:lat, lonMs:lon };
     }//end method
   }//end class
 
