@@ -10,7 +10,7 @@ declare namespace jisX0410 {
     }
     /** メッシュ定義の管理クラス */
     class MeshSchema {
-        static readonly MILLISECOND: number;
+        static readonly MILLISECOND = 3600000;
         /** 経度差ミリ秒 */
         widthMs: number;
         /** 緯度差ミリ秒 */
@@ -46,7 +46,7 @@ declare namespace jisX0410 {
          * @param getCoords メッシュコード取得処理
          * @returns メッシュ情報
          */
-        private static _getCodeBase(thisObj, latlon, getCoords);
+        private static _getCodeBase;
     }
 }
 declare namespace jisX0410 {
@@ -164,7 +164,7 @@ declare namespace jisX0410 {
          * @param footerString フッタ文字列
          * @returns 文字列バイナリ
          */
-        private _jsonToArrayBuffer(features, headerString, footerString);
+        private _jsonToArrayBuffer;
         /**
          * インデックスと分割数からメッシュ情報を取得する
          * @param schema 取得するメッシュの定義
@@ -173,33 +173,33 @@ declare namespace jisX0410 {
          * @param divCount 分割数
          * @returns メッシュ情報
          */
-        private _getMeshInfo(schema, rootsInfo, index, divCount);
+        private _getMeshInfo;
         /**
          * 緯度経度からメッシュ情報の取得
          * @param latlon 緯度経度
          * @param schema メッシュ構造
          * @returns メッシュ情報
          */
-        private _getMeshInfoFromBl(latlon, schema);
+        private _getMeshInfoFromBl;
         /**
          * 根のメッシュスキーマを取得
          * @param schema メッシュスキーマ
          * @param maxSchema 親がこれならここまでとなる定義
          * @returns 指定した親スキーマ (無指定時は1次メッシュ)
          */
-        private _getRootsMeshSchema(schema, maxSchema);
+        private _getRootsMeshSchema;
         /**
          * GeoJSON Featureの作成
          * @param mesh メッシュ情報
          * @returns GeoJsonFeature
          */
-        private _toGeoJson(mesh);
+        private _toGeoJson;
         /**
          * EsriJSON Featureの作成
          * @param mesh メッシュ情報
          * @returns EsriJsonFeatureの作成
          */
-        private _toEsriJson(mesh);
+        private _toEsriJson;
     }
 }
 declare namespace jisX0410 {
@@ -259,15 +259,15 @@ declare namespace jisX0410 {
          */
         constructor(mesh: Array<IShpMesh>, options?: IShpCreateOption);
         /** SHPファイル生成処理 */
-        private _createShpBuffer();
+        private _createShpBuffer;
         /** shxインデックスファイル */
-        private _createInx();
+        private _createInx;
         /** DBFファイルの作成 */
-        private _createDbf();
+        private _createDbf;
         /**
          * 作成するメッシュの最大範囲を計算
          */
-        private _calcMeshExtent();
+        private _calcMeshExtent;
     }
 }
 declare namespace jisX0410 {
@@ -308,7 +308,7 @@ declare namespace jisX0410 {
          * ワーカからのメッセージ返却時
          * @param event イベント
          */
-        private _onMessage(event);
+        private _onMessage;
     }
 }
 declare namespace jisX0410 {

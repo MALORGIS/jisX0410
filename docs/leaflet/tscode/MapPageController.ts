@@ -513,7 +513,7 @@ namespace samples {
           
           let link = document.createElement("a");
           window.document.body.appendChild(link);
-          link.href = reader.result;
+          link.href = <string>reader.result;
           link.download = name + "." + ext;
           link.click();
           window.setTimeout( () => {
